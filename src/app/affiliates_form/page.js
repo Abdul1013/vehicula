@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Topbar from "@/components/Topbar";
-import AffiliatesContent from "@/components/AffiliatesContent";
-import Gallery from "@/components/Gallery";
-import Bottombar from "@/components/Bottombar";
+// import Topbar from "@/components/Topbar";
+// import AffiliatesContent from "@/components/AffiliatesContent";
+// import Gallery from "@/components/Gallery";
+// import Bottombar from "@/components/Bottombar";
 
 export default function AffiliatesPage() {
   return (
@@ -25,11 +25,11 @@ export default function AffiliatesPage() {
 
         {/* Affiliates Section */}
         <div className="pt-lg-5 mt-5">
-          <AffiliatesContent />
+          {/* <AffiliatesContent /> */}
         </div>
       </div>
 
-      <Gallery />
+      {/* <Gallery /> */}
     </>
   );
 }
