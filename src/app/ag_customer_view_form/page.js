@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Topbar from "@/components/Topbar";
-import Bottombar from "@/components/Bottombar";
+
 
 // Example helpers (replace with your real logic)
 function returnStatusBadge(status) {

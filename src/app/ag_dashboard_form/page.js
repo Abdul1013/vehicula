@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Topbar from "@/components/Topbar";
-import Bottombar from "@/components/Bottombar";
-import DashboardMenu from "@/components/DashboardMenu";
 
 // Example helpers
 function returnTrendArrow(current, prev) {
@@ -37,7 +34,7 @@ export default function Dashboard({ v }) {
  
       <div className="container-fluid bg-white hero-header mb-0 text-primary">
         <div className="container" style={{ marginTop: "-30px" }}>
-          <DashboardMenu />
+          {/* <DashboardMenu /> */}
 
           <div className="row">
             <div className="col-12 px-0">
