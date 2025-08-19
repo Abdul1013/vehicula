@@ -10,7 +10,7 @@ export default function Footer() {
             </p>
             <p className="text-center p-5">
               Quick & Reliable Vehicle Help – Vehicle Registration, Peer-to-Peer
-              Auto Financing, Driver's Licenses, Spare Parts, Roadside
+              Auto Financing, Driver Licenses, Spare Parts, Roadside
               Assistance, Auto Port Clearing, and More
             </p>
             <div className="container mx-auto px-4">

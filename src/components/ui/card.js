@@ -1,9 +1,11 @@
+import Image from "next/image";
+
 // components/Card.js
 export default function Card({ title, description, image, link }) {
   return (
     <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {image && (
-        <img
+        <Image height={400} width={400} 
           src={image}
           alt={title}
           className="w-full h-48 object-cover"

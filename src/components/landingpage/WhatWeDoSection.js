@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function WhatWeDoSection({ siteTitle = "Your Company" }) {
   return (
@@ -13,7 +14,7 @@ export default function WhatWeDoSection({ siteTitle = "Your Company" }) {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <img
+          <Image height={400} width={400} 
             src="/img/what_we_do.jpg"
             alt="What we do"
             title="What we do"
