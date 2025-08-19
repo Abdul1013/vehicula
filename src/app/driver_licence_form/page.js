@@ -1,7 +1,9 @@
+"use client"
 import React from "react";
-import { motion } from "framer-motion";
-import PaymentOptions from "./PaymentOptions";
-import Gallery from "./Gallery";
+import { motion} from "framer-motion";
+import Image from "next/image";
+// import PaymentOptions from "./PaymentOptions";
+// import Gallery from "./Gallery";
 
 export default function DashboardPage({
   siteTitle = "Your Brand",
@@ -35,7 +37,7 @@ export default function DashboardPage({
             {/* Subtext */}
             <div className="col-12 col-lg-10 offset-lg-1 py-3 space-y-3 text-lg">
               <p className="font-semibold">
-                If you are a car owner/driver in Abuja or Lagos and you don't
+                If you are a car owner/driver in Abuja or Lagos and you don&apos;t
                 want to go through any stress...
               </p>
               <p className="font-semibold">Then this is good news for you.</p>
@@ -51,7 +53,7 @@ export default function DashboardPage({
                 instructions.
               </p>
               <p className="font-semibold">
-                It's time to say goodbye to all these stress because{" "}
+                It&apos;s time to say goodbye to all these stress because{" "}
                 {siteTitle.toUpperCase()} is here for you.
               </p>
 
@@ -85,7 +87,7 @@ export default function DashboardPage({
       <div className="container-xxl bg-white px-0">
         <div className="row d-flex">
           <div className="col-12 col-lg-6">
-            <img
+            <Image height={400} width={400} 
               src="img/what_we_do.jpg"
               alt="What we do"
               className="img-fluid"
@@ -104,7 +106,7 @@ export default function DashboardPage({
                 At {siteTitle.toUpperCase()}, we assist you with the process...
               </p>
               <p className="mb-3">
-                Even if you don't have full payment, we offer flexible options...
+                Even if you don&apos;t have full payment, we offer flexible options...
               </p>
               <p className="font-bold text-green-600">
                 This opportunity is also for companies with fleets.
@@ -115,7 +117,7 @@ export default function DashboardPage({
       </div>
 
       {/* Payment Options */}
-      <PaymentOptions lineBr={lineBr} />
+      {/* <PaymentOptions lineBr={lineBr} /> */}
 
       {/* FAQ Section */}
       <div className="container-xxl py-10">
@@ -135,7 +137,7 @@ export default function DashboardPage({
       </div>
 
       {/* Gallery */}
-      <Gallery />
+      {/* <Gallery /> */}
 
 
     </div>
