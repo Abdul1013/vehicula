@@ -1,6 +1,17 @@
 /**
- * Some common routine functions (JS version)
+ * Some common routine functions 
  */
+
+
+import crypto from "crypto";
+import { decrypt, encrypt, redirect } from "@/utils/helpers"; // you’ll need to implement these
+import { 
+    SALT, 
+    SITE_MAIN_SESSION, 
+    SITE_SWITCH_SESSION_ADMIN, 
+    SWITCH_COOKIE_NAME, 
+    COOKIE_DOMAIN 
+} from "@/config/constants";
 
 // Truncates a string by specified length, appends dots, optionally converts to uppercase
 function truncate(string, length, dots = "...", toUpper = true) {
@@ -2207,152 +2218,638 @@ async function sendSMSMessage(opt, contacts, para = {}) {
     }
 }
 
-function getRegionData($loc_id) {
-    $getRegions = getAllRegions();
-    $region     = "";
+// function getRegionData($loc_id) {
+//     $getRegions = getAllRegions();
+//     $region     = "";
 
-    if ($getRegions !== "-1") {
-        foreach ($getRegions as $selqry) {
-            if ((int) $loc_id === (int) $selqry["reg_id"]) {
-                $region = $selqry["reg_label"];
+//     if ($getRegions !== "-1") {
+//         foreach ($getRegions as $selqry) {
+//             if ((int) $loc_id === (int) $selqry["reg_id"]) {
+//                 $region = $selqry["reg_label"];
+//             }
+//         }
+//     }
+
+//     return [$region, $getRegions];
+// }
+
+// function compressImageWithWatermark($source, $destination, $quality) {
+//     list($width, $height, $type) = getimagesize($source);
+
+//     // Load source image
+//     switch ($type) {
+//         case IMAGETYPE_JPEG:
+//             $sourceImg = imagecreatefromjpeg($source);
+//             break;
+//         case IMAGETYPE_PNG:
+//             $sourceImg = imagecreatefrompng($source);
+//             imagealphablending($sourceImg, true);
+//             imagesavealpha($sourceImg, true);
+//             break;
+//         case IMAGETYPE_GIF:
+//             $sourceImg = imagecreatefromgif($source);
+//             break;
+//         default:
+//             return false;
+//     }
+
+//     // Load watermark
+//     $watermark         = imagecreatefrompng('img/uploads/watermark.png');
+//     $watermark_width   = imagesx($watermark);
+//     $watermark_height  = imagesy($watermark);
+//     $scale_factor      = min($width / $watermark_width, $height / $watermark_height);
+//     $resized_width     = (int) ($watermark_width * $scale_factor);
+//     $resized_height    = (int) ($watermark_height * $scale_factor);
+
+//     $resized_watermark = imagecreatetruecolor($resized_width, $resized_height);
+//     imagealphablending($resized_watermark, false);
+//     imagesavealpha($resized_watermark, true);
+
+//     imagecopyresampled(
+//         $resized_watermark,
+//         $watermark,
+//         0, 0, 0, 0,
+//         $resized_width, $resized_height,
+//         $watermark_width, $watermark_height
+//     );
+
+//     // Center watermark
+//     $position_x = (int) (($width - $resized_width) / 2);
+//     $position_y = (int) (($height - $resized_height) / 2);
+//     imagecopy($sourceImg, $resized_watermark, $position_x, $position_y, 0, 0, $resized_width, $resized_height);
+
+//     // Save final image
+//     switch ($type) {
+//         case IMAGETYPE_JPEG:
+//             imagejpeg($sourceImg, $destination, $quality);
+//             break;
+//         case IMAGETYPE_PNG:
+//             imagepng($sourceImg, $destination);
+//             break;
+//         case IMAGETYPE_GIF:
+//             imagegif($sourceImg, $destination);
+//             break;
+//     }
+
+//     // Create thumbnail
+//     $thumbnailWidth  = 400;
+//     $thumbnailHeight = intval($height * ($thumbnailWidth / $width));
+//     $thumbnail       = imagecreatetruecolor($thumbnailWidth, $thumbnailHeight);
+
+//     imagealphablending($thumbnail, false);
+//     imagesavealpha($thumbnail, true);
+//     imagecopyresampled($thumbnail, $sourceImg, 0, 0, 0, 0, $thumbnailWidth, $thumbnailHeight, $width, $height);
+
+//     $thumbnailPath = 'img/uploads/docs/thumbnail/' . THUMBNAIL_PREFIX . basename($destination);
+//     switch ($type) {
+//         case IMAGETYPE_JPEG:
+//             imagejpeg($thumbnail, $thumbnailPath, $quality);
+//             break;
+//         case IMAGETYPE_PNG:
+//             imagepng($thumbnail, $thumbnailPath);
+//             break;
+//         case IMAGETYPE_GIF:
+//             imagegif($thumbnail, $thumbnailPath);
+//             break;
+//     }
+
+//     // Cleanup
+//     imagedestroy($sourceImg);
+//     imagedestroy($watermark);
+//     imagedestroy($resized_watermark);
+//     imagedestroy($thumbnail);
+
+//     return true;
+// }
+
+// function areOnlyPositiveIntegers($array) {
+//     foreach ($array as $value) {
+//         if (is_string($value) && ctype_digit($value)) {
+//             $value = (int) $value;
+//         }
+
+//         if (!is_int($value) || $value <= 0) {
+//             return false;
+//         }
+//     }
+//     return true;
+// }
+
+// function returnPhoneNumber($phoneNumber) {
+//     $phoneNumber = preg_replace('/\D/', '', $phoneNumber);
+
+//     if (strlen($phoneNumber) == 10 && $phoneNumber[0] === '0') {
+//         return false;
+//     }
+
+//     if (strlen($phoneNumber) == 10 && $phoneNumber[0] !== '0') {
+//         return '0' . $phoneNumber;
+//     }
+
+//     if (strlen($phoneNumber) == 11 && $phoneNumber[0] === '0') {
+//         return $phoneNumber;
+//     }
+
+//     return false;
+// }
+
+// function arrayToCommaSeparatedLists($array) {
+//     $keys   = array_keys($array);
+//     $values = array_values($array);
+
+//     return [
+//         'keys'   => implode(',', $keys),
+//         'values' => implode(',', $values)
+//     ];
+// }
+
+function calculateLoanStatus(loanTermDays, disbursementDateTime) {
+    // Convert the loan term into milliseconds (1 day = 86400000 ms)
+    const loanTermMs = loanTermDays * 86400000;
+    const currentDateTime = new Date(getTimeNowCustom());
+    const disbursementDate = new Date(disbursementDateTime);
+
+    // Calculate the due date
+    const dueDateTime = new Date(disbursementDate.getTime() + loanTermMs);
+
+    // Calculate day difference
+    const diffDays = Math.floor((dueDateTime - currentDateTime) / 86400000);
+
+    if (diffDays > 0) {
+        return `<span class='text-primary'>Due in ${diffDays} days.</span>`;
+    } else if (diffDays < 0) {
+        return `<span class='text-danger'>Overdue by ${Math.abs(diffDays)} days.</span>`;
+    } else {
+        return `<span class='text-warning'>Due today.</span>`;
+    }
+}
+
+function removeCommas(formattedAmount) {
+    return formattedAmount.replace(/,/g, '');
+}
+
+function payDataArray(batchData) {
+    let fetchedQueries = {};
+    let grandTotal = 0;
+    let grandPaid = 0;
+    let thisUnitPrice = 0;
+    let totalAmnt = 0;
+
+    for (let selqry of batchData) {
+        let thisBatch = selqry.vsb_id;
+        let thisReqId = selqry.vsr_id;
+
+        let getBatchPayments;
+        if (fetchedQueries.hasOwnProperty(thisBatch)) {
+            getBatchPayments = fetchedQueries[thisBatch];
+        } else {
+            getBatchPayments = getBatchPaymentByBatchID(thisBatch);
+            fetchedQueries[thisBatch] = getBatchPayments;
+        }
+
+        let totalPaid = 0;
+        if (getBatchPayments !== "-1") {
+            for (let innerSelqry of getBatchPayments) {
+                let splitPayArr = innerSelqry.vsbp_pay_split.split(",");
+                let i = 0;
+                while (i < splitPayArr.length) {
+                    if (parseInt(splitPayArr[i]) === parseInt(thisReqId)) {
+                        i++;
+                        totalPaid += parseFloat(splitPayArr[i]);
+                    } else {
+                        i++;
+                    }
+                    i++;
+                }
+            }
+        }
+
+        let payOpt = parseInt(selqry.vsb_pay_option);
+        switch (payOpt) {
+            case 1:
+            case 2:
+                totalAmnt = selqry.vsr_total_unit;
+                thisUnitPrice = selqry.vsr_unit_price;
+                break;
+            case 3:
+                totalAmnt = selqry.vsr_total_unit_with_interest;
+                thisUnitPrice = selqry.vsr_unit_price + selqry.vsr_unit_interest_amnt;
+                break;
+            default:
+                break;
+        }
+
+        let hideCompletePay = "";
+        if (totalPaid >= totalAmnt) {
+            hideCompletePay = "d-none";
+        }
+
+        grandTotal += totalAmnt;
+        grandPaid += totalPaid;
+    }
+
+    let bal = grandTotal - grandPaid;
+    return [thisUnitPrice, totalAmnt, grandPaid, grandTotal, grandPaid, bal];
+}
+
+function getRange(number, altRecords = 9) {
+    const start = (number - 1) * altRecords;
+    const end = start + altRecords;
+    return [start, end];
+}
+
+function checkPriorityRole(roleArr) {
+    if (sessionStorage.getItem('AGENT_ROLE') && roleArr.includes(sessionStorage.getItem('AGENT_ROLE'))) {
+        return true;
+    } else {
+        redirect("dashboard");
+    }
+}
+
+function returnTrendArrow(mainNumber, subNumber, isReverse = false) {
+    let returnStr = "";
+
+    if (isReverse) {
+        if (mainNumber > subNumber) {
+            returnStr = '<i class="fa fa-arrow-down text-danger"></i>';
+        } else if (mainNumber < subNumber) {
+            returnStr = '<i class="fa fa-arrow-up text-success"></i>';
+        } else if (mainNumber === subNumber) {
+            returnStr = '<i class="fa fa-arrow-right text-primary"></i>';
+        }
+    } else {
+        if (mainNumber > subNumber) {
+            returnStr = '<i class="fa fa-arrow-up text-success"></i>';
+        } else if (mainNumber < subNumber) {
+            returnStr = '<i class="fa fa-arrow-down text-danger"></i>';
+        } else if (mainNumber === subNumber) {
+            returnStr = '<i class="fa fa-arrow-right text-primary"></i>';
+        }
+    }
+
+    return returnStr;
+}
+
+function returnMinimumAmount() {
+    const maxAmnt = 9999999999;
+    const id = 1;
+    const getNotifySettings = getVehicleNotifySettings();
+
+    if (getNotifySettings !== "-1") {
+        for (let selqry of getNotifySettings) {
+            if (parseInt(selqry.vns_id) === id) {
+                return selqry.vns_val;
+            }
+        }
+    }
+    return maxAmnt;
+}
+
+function returnDSCMinimumAmount() {
+    const maxAmnt = 9999999999;
+    const id = 2;
+    const getNotifySettings = getVehicleNotifySettings();
+
+    if (getNotifySettings !== "-1") {
+        for (let selqry of getNotifySettings) {
+            if (parseInt(selqry.vns_id) === id) {
+                return selqry.vns_val;
+            }
+        }
+    }
+    return maxAmnt;
+}
+
+function returnMinimumPercentForNotification() {
+    const maxAmnt = 100;
+    const id = 3;
+    const getNotifySettings = getVehicleNotifySettings();
+
+    if (getNotifySettings !== "-1") {
+        for (let selqry of getNotifySettings) {
+            if (parseInt(selqry.vns_id) === id) {
+                return selqry.vns_val;
+            }
+        }
+    }
+    return maxAmnt;
+}
+
+function returnLastTransactionDuration() {
+    const maxAmnt = 5000;
+    const id = 4;
+    const getNotifySettings = getVehicleNotifySettings();
+
+    if (getNotifySettings !== "-1") {
+        for (let selqry of getNotifySettings) {
+            if (parseInt(selqry.vns_id) === id) {
+                return selqry.vns_val;
+            }
+        }
+    }
+    return maxAmnt;
+}
+
+function checkDateDifference(mysqlDatetime) {
+    const date = new Date(mysqlDatetime);
+    const now = new Date(getTimeNowCustom());
+
+    const diffMs = Math.abs(now - date); // Difference in milliseconds
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+}
+
+
+
+/**
+ * Validates a switch token
+ * @param {string} token - Base64 encoded token
+ * @returns {boolean}
+ */
+export function isValidSwitchToken(token) {
+    try {
+        const decoded = Buffer.from(token, "base64").toString("utf-8");
+        const data = JSON.parse(decoded);
+
+        if (
+            data?.expires &&
+            data?.customer_id &&
+            data?.admin_id &&
+            data?.url &&
+            data?.back_url &&
+            data?.signature
+        ) {
+            if (data.expires > Date.now() / 1000) {
+                const expectedSignature = crypto
+                    .createHmac("sha256", SALT)
+                    .update(`${data.customer_id}${data.expires}`)
+                    .digest("hex");
+
+                return crypto.timingSafeEqual(
+                    Buffer.from(expectedSignature, "utf-8"),
+                    Buffer.from(data.signature, "utf-8")
+                );
+            }
+        }
+        return false;
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Sets session values and redirects
+ * @param {object} data
+ * @param {object} req - Next.js API request object
+ * @param {object} res - Next.js API response object
+ */
+export function doHasCookieSetRoutine(data, req, res) {
+    const url = decrypt(data.url);
+    req.session[SITE_MAIN_SESSION] = data.customer_id;
+    req.session[SITE_SWITCH_SESSION_ADMIN] = data.admin_id;
+    redirect(res, url);
+}
+
+/**
+ * Sets a secure cookie
+ * @param {object} data
+ * @param {object} res - Next.js API response object
+ */
+export function doSetCookieSetRoutine(data, res) {
+    const cookieValue = encrypt(data.admin_id);
+    const cookieExpiry = new Date(Date.now() + 2 * 60 * 60 * 1000); // 2 hours
+
+    res.setHeader("Set-Cookie", [
+        `${SWITCH_COOKIE_NAME}=${cookieValue}; Expires=${cookieExpiry.toUTCString()}; Path=/; Domain=${COOKIE_DOMAIN}; Secure; HttpOnly; SameSite=Strict`
+    ]);
+}
+
+/**
+ * Returns services that require cover note
+ * @returns {number[]}
+ */
+export function servicesRequireCoverNote() {
+    return [8];
+}
+
+/**
+ * Returns DS services
+ * @returns {number[]}
+ */
+export function dsServices() {
+    return [9];
+}
+
+// ---- Imports for external dependencies ----
+// import {
+//     getBatchPayByReqID,
+//     validateAdminNoPassword,
+//     getCreditConstants,
+//     getCurrentScore,
+//     getBadgeGroup,
+//     addScoreShift,
+//     addCustomerScoreValue,
+//     updateCustomerScore,
+//     toggleProcessingStatus
+// } from "@/services/db"; // you must implement/import these
+
+// import {
+//     SITE_SWITCH_SESSION_ADMIN,
+//     SWITCH_DATA_HOLD
+// } from "@/config/constants";
+
+/**
+ * Returns allowed payment options
+ * @param {string} acceptedPaymentOptions
+ * @returns {number[]}
+ */
+export function returnPayOptions(acceptedPaymentOptions) {
+    const tmpPayOpts = [1, 2, 3];
+    let payOptions = [];
+
+    if (!acceptedPaymentOptions) {
+        payOptions = tmpPayOpts;
+    } else {
+        const payOptArr = acceptedPaymentOptions.split(",").map(p => parseInt(p, 10));
+        for (const thisOpt of payOptArr) {
+            if (tmpPayOpts.includes(thisOpt)) {
+                payOptions.push(thisOpt);
+            }
+        }
+        if (payOptions.length === 0) {
+            payOptions = tmpPayOpts;
+        }
+    }
+    return payOptions;
+}
+
+/**
+ * Calculates total paid and expected for a given request ID
+ * @param {number} reqId
+ * @returns {[number, number]} [totalPaid, totalExpected]
+ */
+export async function returnTotalPaidAndExpected(reqId) {
+    let totalPaid = 0;
+    let totalExpected = 0;
+
+    const batchPay = await getBatchPayByReqID(reqId);
+    if (batchPay !== "-1") {
+        const processedIds = {};
+        for (const record of batchPay) {
+            const payId = record.vsbp_id;
+            totalExpected = parseFloat(record.vsb_pay_total);
+            const paySplit = record.vsbp_pay_split;
+            if (payId) {
+                processedIds[payId] = paySplit;
+            }
+        }
+
+        for (const splitPay of Object.values(processedIds)) {
+            const splitArr = splitPay.split(",");
+            for (let i = 0; i < splitArr.length;) {
+                const thisReqId = parseInt(splitArr[i++], 10);
+                const thisReqPaid = parseFloat(splitArr[i++]);
+                if (reqId === thisReqId) {
+                    totalPaid += thisReqPaid;
+                }
+            }
+        }
+    }
+    return [totalPaid, totalExpected];
+}
+
+/**
+ * Checks if current session is an admin view
+ * @param {object} session - Session object
+ * @returns {Promise<number>} -1 if not admin, 1 if admin
+ */
+export async function checkIfAdminView(session) {
+    let IS_ADMIN_VIEW = -1;
+
+    if (session?.[SITE_SWITCH_SESSION_ADMIN] && session?.[SWITCH_DATA_HOLD]) {
+        const adminId = session[SITE_SWITCH_SESSION_ADMIN];
+        const validAdmin = await validateAdminNoPassword(adminId);
+
+        if (validAdmin !== "-1") {
+            const switchData = session[SWITCH_DATA_HOLD];
+            const sAdminId = switchData.admin_id;
+            const validSwitchAdmin = await validateAdminNoPassword(sAdminId);
+
+            if (
+                validSwitchAdmin !== "-1" &&
+                parseInt(adminId, 10) === parseInt(sAdminId, 10)
+            ) {
+                IS_ADMIN_VIEW = 1;
+            }
+        }
+    }
+    return IS_ADMIN_VIEW;
+}
+
+/**
+ * Updates score for a user
+ */
+export async function doScoreUpdateRoutine(checkVal, uid, reference, forceReduction = false) {
+    let point;
+
+    const credits = await getCreditConstants();
+    if (credits !== "-1") {
+        for (const c of credits) {
+            if (parseInt(c.vcp_id, 10) === checkVal) {
+                point = c.vcp_point;
             }
         }
     }
 
-    return [$region, $getRegions];
-}
-
-function compressImageWithWatermark($source, $destination, $quality) {
-    list($width, $height, $type) = getimagesize($source);
-
-    // Load source image
-    switch ($type) {
-        case IMAGETYPE_JPEG:
-            $sourceImg = imagecreatefromjpeg($source);
-            break;
-        case IMAGETYPE_PNG:
-            $sourceImg = imagecreatefrompng($source);
-            imagealphablending($sourceImg, true);
-            imagesavealpha($sourceImg, true);
-            break;
-        case IMAGETYPE_GIF:
-            $sourceImg = imagecreatefromgif($source);
-            break;
-        default:
-            return false;
+    if (forceReduction && point > 0) {
+        point = -1 * point;
     }
 
-    // Load watermark
-    $watermark         = imagecreatefrompng('img/uploads/watermark.png');
-    $watermark_width   = imagesx($watermark);
-    $watermark_height  = imagesy($watermark);
-    $scale_factor      = min($width / $watermark_width, $height / $watermark_height);
-    $resized_width     = (int) ($watermark_width * $scale_factor);
-    $resized_height    = (int) ($watermark_height * $scale_factor);
+    const currentLoanScoreData = await getCurrentScore(uid);
+    let currentScore = (currentLoanScoreData !== "-1" && currentLoanScoreData[0]?.total_score) 
+        ? currentLoanScoreData[0].total_score 
+        : 0;
 
-    $resized_watermark = imagecreatetruecolor($resized_width, $resized_height);
-    imagealphablending($resized_watermark, false);
-    imagesavealpha($resized_watermark, true);
+    let tmpScore = currentScore;
+    if (currentScore < 0) tmpScore = 0;
+    else if (currentScore > 100) tmpScore = 100;
 
-    imagecopyresampled(
-        $resized_watermark,
-        $watermark,
-        0, 0, 0, 0,
-        $resized_width, $resized_height,
-        $watermark_width, $watermark_height
-    );
+    const badgeGroup = await getBadgeGroup(tmpScore);
+    if (badgeGroup !== "-1") {
+        const groupId = badgeGroup[0].v_bg_id;
+        let newScore = point + currentScore;
+        let tmpNewScore = newScore;
 
-    // Center watermark
-    $position_x = (int) (($width - $resized_width) / 2);
-    $position_y = (int) (($height - $resized_height) / 2);
-    imagecopy($sourceImg, $resized_watermark, $position_x, $position_y, 0, 0, $resized_width, $resized_height);
+        if (newScore < 0) tmpNewScore = 0;
+        else if (newScore > 100) tmpNewScore = 100;
 
-    // Save final image
-    switch ($type) {
-        case IMAGETYPE_JPEG:
-            imagejpeg($sourceImg, $destination, $quality);
-            break;
-        case IMAGETYPE_PNG:
-            imagepng($sourceImg, $destination);
-            break;
-        case IMAGETYPE_GIF:
-            imagegif($sourceImg, $destination);
-            break;
-    }
+        const newBadgeGroup = await getBadgeGroup(tmpNewScore);
+        const newGroupId = (newBadgeGroup !== "-1") ? newBadgeGroup[0].v_bg_id : 0;
 
-    // Create thumbnail
-    $thumbnailWidth  = 400;
-    $thumbnailHeight = intval($height * ($thumbnailWidth / $width));
-    $thumbnail       = imagecreatetruecolor($thumbnailWidth, $thumbnailHeight);
-
-    imagealphablending($thumbnail, false);
-    imagesavealpha($thumbnail, true);
-    imagecopyresampled($thumbnail, $sourceImg, 0, 0, 0, 0, $thumbnailWidth, $thumbnailHeight, $width, $height);
-
-    $thumbnailPath = 'img/uploads/docs/thumbnail/' . THUMBNAIL_PREFIX . basename($destination);
-    switch ($type) {
-        case IMAGETYPE_JPEG:
-            imagejpeg($thumbnail, $thumbnailPath, $quality);
-            break;
-        case IMAGETYPE_PNG:
-            imagepng($thumbnail, $thumbnailPath);
-            break;
-        case IMAGETYPE_GIF:
-            imagegif($thumbnail, $thumbnailPath);
-            break;
-    }
-
-    // Cleanup
-    imagedestroy($sourceImg);
-    imagedestroy($watermark);
-    imagedestroy($resized_watermark);
-    imagedestroy($thumbnail);
-
-    return true;
-}
-
-function areOnlyPositiveIntegers($array) {
-    foreach ($array as $value) {
-        if (is_string($value) && ctype_digit($value)) {
-            $value = (int) $value;
+        if (parseInt(newGroupId, 10) !== parseInt(groupId, 10)) {
+            await addScoreShift(uid, currentScore, newScore);
         }
 
-        if (!is_int($value) || $value <= 0) {
-            return false;
+        const addCustomerScore = await addCustomerScoreValue(uid, point, reference);
+        if (addCustomerScore !== "-1") {
+            await updateCustomerScore(tmpNewScore, uid);
         }
     }
-    return true;
 }
 
-function returnPhoneNumber($phoneNumber) {
-    $phoneNumber = preg_replace('/\D/', '', $phoneNumber);
-
-    if (strlen($phoneNumber) == 10 && $phoneNumber[0] === '0') {
-        return false;
-    }
-
-    if (strlen($phoneNumber) == 10 && $phoneNumber[0] !== '0') {
-        return '0' . $phoneNumber;
-    }
-
-    if (strlen($phoneNumber) == 11 && $phoneNumber[0] === '0') {
-        return $phoneNumber;
-    }
-
-    return false;
+/**
+ * Returns product codes mapping
+ */
+export function newProductCodes() {
+    return {
+        "23116": 2,
+        "68522": 7,
+        "49809": 7,
+        "03396": 7,
+        "43573": 7,
+        "39690": 8,
+        "44527": 8,
+        "42478": 8,
+        "47479": 1,
+        "73771": 1,
+        "00302": 1,
+        "36963": 3,
+        "80347": 9,
+        "69985": 6,
+        "10346": 10,
+        "98180": 5
+    };
 }
 
-function arrayToCommaSeparatedLists($array) {
-    $keys   = array_keys($array);
-    $values = array_values($array);
+/**
+ * Pushes requests to processing if payment condition met
+ */
+export async function doPushInProgressRoutine(reqQry, payOpt, getPayData = []) {
+    for (const row of reqQry) {
+        const inProgress = parseInt(row.vsr_in_progress, 10);
+        const pricing = parseFloat(row.vss_va_price);
+        const reqId = row.vsr_id;
+        const uid = row.vsr_uid;
+        const approved = parseInt(row.vsr_va_approved, 10);
 
-    return [
-        'keys'   => implode(',', $keys),
-        'values' => implode(',', $values)
-    ];
+        if (inProgress === 0 && approved === 0 && pricing > 0) {
+            if (payOpt === 1 || payOpt === 3) {
+                await toggleProcessingStatus(uid, reqId);
+            } else if (payOpt === 2) {
+                if (!getPayData.length) {
+                    getPayData = await returnTotalPaidAndExpected(reqId);
+                }
+                const paidReq = getPayData[0];
+                const expectedReq = getPayData[1];
+
+                if (paidReq >= expectedReq) {
+                    await toggleProcessingStatus(uid, reqId);
+                }
+            }
+        }
+    }
 }
-
-
 
 export {
     truncate,

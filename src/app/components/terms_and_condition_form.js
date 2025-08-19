@@ -1,7 +1,7 @@
 // pages/terms.js
 import React from "react";
-import TopBar from "../components/TopBar";
-import BottomBar from "../components/BottomBar";
+// import TopBar from "../components/TopBar";
+// import BottomBar from "../components/BottomBar";
 
 // Placeholder for dynamic site title (can come from backend or env variable)
 const SITE_TITLE = process.env.NEXT_PUBLIC_SITE_TITLE || "Vehiculars";
@@ -9,7 +9,7 @@ const SITE_TITLE = process.env.NEXT_PUBLIC_SITE_TITLE || "Vehiculars";
 const Terms = () => {
   return (
     <>
-      <TopBar />
+      {/* <TopBar /> */}
 
       <div className="container-xxl bg-white py-3">
         <div className="hidden lg:block py-20"></div>
@@ -27,7 +27,7 @@ const Terms = () => {
             <p>
               Welcome to <span className="font-semibold">{SITE_TITLE.toUpperCase()}</span>! These terms and
               conditions outline the rules and regulations for the use of{" "}
-              {SITE_TITLE.toUpperCase()}'s services. By accessing this website, you accept these terms in full.
+              {SITE_TITLE.toUpperCase()}&apos;s services. By accessing this website, you accept these terms in full.
             </p>
 
             <h6 className="font-semibold">1. General Terms</h6>
@@ -50,7 +50,7 @@ const Terms = () => {
               <li>Comprehensive Insurance</li>
               <li>Vehicle Particulars Renewal</li>
               <li>Spare Parts</li>
-              <li>Driver's License</li>
+              <li>Driver&apos;s License</li>
               <li>Plate Number</li>
               <li>Change of Ownership</li>
               <li>Local Government Paper</li>
@@ -146,7 +146,7 @@ const Terms = () => {
         </div>
       </div>
 
-      <BottomBar />
+      {/* <BottomBar /> */}
     </>
   );
 };
