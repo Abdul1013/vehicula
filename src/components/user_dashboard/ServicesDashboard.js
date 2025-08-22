@@ -14,16 +14,16 @@ import {
 
 const services = [
   {
+    title: "Vehicle Particulars Renewal",
+    description: "Get your car registered with ease and flexible plans.",
+    icon: Car,
+    path: "/vehicle_particulars_renewal",
+  },
+  {
     title: "Driver License",
     description: "Save in bits for your vehicle particulars renewal.",
     icon: FileText,
     path: "/dl_application_form",
-  },
-  {
-    title: "New Vehicle Registration",
-    description: "Get your car registered with ease and flexible plans.",
-    icon: Car,
-    path: "/services/vehicle-registration",
   },
   {
     title: "Comprehensive Insurance",
@@ -67,15 +67,13 @@ export default function ServicesDashboard() {
   const router = useRouter();
 
   return (
-    <section className="container mx-auto px-6 py-12">
+    <section className="container mx-auto  px-6 py-12">
       {/* Header */}
-      <div className="text-center mb-12">
+      <div className="text-center mb-6">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-          Our Services
+         Let&apos;s Get Started! 
         </h2>
-        <p className="mt-2 text-gray-600">
-          Convenient, secure, and reliable solutions for all your vehicle needs
-        </p>
+        
       </div>
 
       {/* Service Cards Grid */}

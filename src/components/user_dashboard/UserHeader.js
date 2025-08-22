@@ -10,11 +10,11 @@ import { Globe, Settings } from "lucide-react";
 export default function UserHeader({ user, region }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const firstName = user.fullName.split(" ")[0];
-  const photo = user.photo || "/img/user.png";
+  // const firstName = user.fullName.split(" ")[0];
+  const photo = "/img/user.png";
 
   return (
-    <div className="flex flex-wrap items-center justify-between border-b pb-3 mb-4">
+    <div className="flex mt-20 flex-wrap items-center justify-between border-b pb-3 mb-4">
       {/* Left: Profile + Greeting */}
       <div className="flex items-center space-x-3">
         <Image
@@ -25,10 +25,12 @@ export default function UserHeader({ user, region }) {
           className="rounded-full object-cover"
         />
         <div>
-          <p className="text-sm text-gray-700">Hi, {firstName}!</p>
+          <p className="text-sm text-gray-700">Hi, 
+            {/* {firstName}! */}
+            </p>
           <div className="flex items-center text-xs text-gray-500 space-x-2">
             <Globe className="w-3 h-3" />
-            <span>{region}</span>
+            <span>Abuja</span>
             <Link
               href="/profile"
               className="text-blue-600 hover:underline hover:text-blue-800 transition"
