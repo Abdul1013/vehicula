@@ -41,13 +41,13 @@ const services = [
     title: "Change of Ownership",
     description: "Update your vehicle particulars after purchase.",
     icon: UserCheck,
-    path: "/services/change-ownership",
+    path: "/change-of-ownership",
   },
   {
     title: "Plate Number Issuance",
     description: "Get new or replacement plate numbers quickly.",
     icon: Key,
-    path: "/services/plate-number",
+    path: "/plate-number-service",
   },
   {
     title: "Vehicle Inspection",
@@ -67,37 +67,38 @@ export default function ServicesDashboard() {
   const router = useRouter();
 
   return (
-    <section className="container mx-auto  px-6 py-12">
+    <section className='container mx-auto  px-6 py-12'>
       {/* Header */}
-      <div className="text-center mb-6">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-         Let&apos;s Get Started! 
+      <div className='text-center mb-6'>
+        <h2 className='text-3xl md:text-4xl font-bold text-gray-900'>
+          Let&apos;s Get Started!
         </h2>
-        
       </div>
 
       {/* Service Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8'>
         {services.map((service, index) => {
           const Icon = service.icon;
           return (
             <div
               key={index}
               onClick={() => router.push(service.path)}
-              className="cursor-pointer group block rounded-2xl bg-white shadow-md hover:shadow-lg transition-shadow p-6 text-center border border-gray-100 hover:border-green-500"
+              className='cursor-pointer group block rounded-2xl bg-white shadow-md hover:shadow-lg transition-shadow p-6 text-center border border-gray-100 hover:border-green-500'
             >
               {/* Icon */}
-              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors">
-                <Icon className="w-8 h-8 text-green-600" />
+              <div className='flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors'>
+                <Icon className='w-8 h-8 text-green-600' />
               </div>
 
               {/* Title */}
-              <h3 className="text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+              <h3 className='text-lg font-semibold text-gray-900 group-hover:text-green-600 transition-colors'>
                 {service.title}
               </h3>
 
               {/* Description */}
-              <p className="mt-2 text-sm text-gray-600">{service.description}</p>
+              <p className='mt-2 text-sm text-gray-600'>
+                {service.description}
+              </p>
             </div>
           );
         })}

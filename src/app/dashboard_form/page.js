@@ -12,6 +12,7 @@ import Button from "@/components/ui/button";
 import ServicesDashboard from "@/components/user_dashboard/ServicesDashboard";
 import UserHeader from "@/components/user_dashboard/UserHeader";
 import DashBoardPage from "@/components/user_dashboard/DashBoardTemplate";
+import ChangeOfOwnership from "@/components/user_dashboard/changeOfOwnership";
 import DashboardTabs from "@/components/user_dashboard/DashboaedTabs";
 
 export default function Dashboard() {
