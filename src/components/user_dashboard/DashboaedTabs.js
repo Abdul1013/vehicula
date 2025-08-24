@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Briefcase, Wrench, Coins } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-export default function DashboardTabs() {
+export default function DashboardTabs({}) {
   const pathname = usePathname();
 
   // Determine active tab by pathname
