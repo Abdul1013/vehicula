@@ -36,7 +36,8 @@ const services = [
     title: "Spare Parts",
     description: "Battery, Tyre, Engine oil, KEKE, Engine Oil",
     icon: Wrench,
-    path: "/payment_options",
+    // path: "/payment_options",
+    path: "/sub-services/spare_parts",
   },
   {
     title: "Plate Number ",
