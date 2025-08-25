@@ -1,52 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Search, ShoppingCart } from "lucide-react";
-import Router from "next/router";
+import { Search, Car, Bus, Truck, Van, BusFront, CarFront } from "lucide-react";
 import { useRouter } from "next/navigation";
+
 const services = [
-  { id: 1, name: "Saloon/Car", type: "Private", price: 23500, icon: "🚗" },
-  { id: 2, name: "Saloon/Car", type: "Commercial", price: 26500, icon: "🚗" },
-  { id: 3, name: "Jeep/SUV", type: "Private", price: 25000, icon: "🚙" },
-  {
-    id: 4,
-    name: "Space bus/Sienna",
-    type: "Private",
-    price: 25000,
-    icon: "🚐",
-  },
-  {
-    id: 5,
-    name: "Space bus/Sienna",
-    type: "Commercial",
-    price: 29200,
-    icon: "🚐",
-  },
-  { id: 6, name: "Pick-Up/Hilux", type: "Private", price: 27000, icon: "🛻" },
-  {
-    id: 7,
-    name: "Pick-Up/Hilux",
-    type: "Commercial",
-    price: 32000,
-    icon: "🛻",
-  },
-  {
-    id: 8,
-    name: "18 passenger/Bus",
-    type: "Private",
-    price: 26000,
-    icon: "🚌",
-  },
-  {
-    id: 9,
-    name: "18 passenger/Bus",
-    type: "Commercial",
-    price: 30000,
-    icon: "🚌",
-  },
-  { id: 10, name: "Coaster Bus", type: "Private", price: 30000, icon: "🚌" },
-  { id: 11, name: "Coaster Bus", type: "Commercial", price: 35000, icon: "🚌" },
-  { id: 12, name: "Truck", type: "Commercial", price: 85000, icon: "🚛" },
+  { id: 1, name: "Saloon/Car", type: "Private", price: 23500, icon: CarFront },
+  { id: 2, name: "Saloon/Car", type: "Commercial", price: 26500, icon: CarFront },
+  { id: 3, name: "Jeep/SUV", type: "Private", price: 25000, icon: Car },
+  { id: 4, name: "Space bus/Sienna", type: "Private", price: 25000, icon: Bus},
+  { id: 5, name: "Space bus/Sienna", type: "Commercial", price: 29200, icon: Bus  },
+  { id: 6, name: "Pick-Up/Hilux", type: "Private", price: 27000, icon: Truck },
+  { id: 7, name: "Pick-Up/Hilux", type: "Commercial", price: 32000, icon: Truck },
+  { id: 8, name: "18 passenger/Bus", type: "Private", price: 26000, icon: Bus },
+  { id: 9, name: "18 passenger/Bus", type: "Commercial", price: 30000, icon: Bus },
+  { id: 10, name: "Coaster Bus", type: "Private", price: 30000, icon: Bus },
+  { id: 11, name: "Coaster Bus", type: "Commercial", price: 35000, icon: Bus },
+  { id: 12, name: "Truck", type: "Commercial", price: 85000, icon: Truck },
 ];
 
 function formatPrice(amount) {
@@ -58,12 +28,6 @@ export default function VehicleParticularsRenewal() {
   const [cart, setCart] = useState([]);
   const [query, setQuery] = useState("");
   const router = useRouter();
-  const toggleSelect = (service) => {
-    setSelectedId(service.id);
-    if (!cart.find((item) => item.id === service.id)) {
-      setCart([...cart, service]);
-    }
-  };
 
   const filteredServices = services.filter((s) =>
     s.name.toLowerCase().includes(query.toLowerCase())
@@ -78,15 +42,6 @@ export default function VehicleParticularsRenewal() {
           className="text-primary font-medium hover:underline"
         >
           ← Vehicle Particulars Renewal
-        </button>
-
-        <button className="relative bg-primary text-white p-3 rounded-full shadow-lg hover:scale-105 transition">
-          <ShoppingCart size={22} />
-          {cart.length > 0 && (
-            <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
-              {cart.length}
-            </span>
-          )}
         </button>
       </div>
 
@@ -106,17 +61,20 @@ export default function VehicleParticularsRenewal() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {filteredServices.map((service) => {
           const isSelected = selectedId === service.id;
+          const Icon = service.icon; // ✅ FIXED
           return (
             <button
               key={service.id}
-              onClick={() => router.push('/service_qty_form')}
+              onClick={() => router.push("/service_qty_form")}
               className={`p-4 rounded-xl shadow-sm border transition ${
                 isSelected
                   ? "bg-black text-white"
                   : "bg-gray-50 hover:bg-gray-100"
               }`}
             >
-              <div className="text-4xl mb-3">{service.icon}</div>
+              <div className="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-green-50 group-hover:bg-green-100 transition-colors">
+                <Icon className="w-8 h-8 text-green-600" />
+              </div>
               <div className="font-medium text-green-500">{service.name}</div>
               <div
                 className={`text-sm ${
@@ -132,8 +90,6 @@ export default function VehicleParticularsRenewal() {
           );
         })}
       </div>
-
-      {/* Cart Floating Icon */}
     </div>
   );
 }
