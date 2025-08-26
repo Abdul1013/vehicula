@@ -1,6 +1,7 @@
 // app/my-account/page.jsx
 "use client";
-import { useState, useEffect } from "react";
+
+import { Suspense, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 function ProgressBar({ value }) {
@@ -9,7 +10,7 @@ function ProgressBar({ value }) {
       <div
         className="bg-blue-600 h-2.5 rounded-full transition-all duration-500"
         style={{ width: `${value}%` }}
-      ></div>
+      />
     </div>
   );
 }
@@ -20,7 +21,7 @@ function Card({ title, subtitle, extra, actions }) {
       <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
       {subtitle && <p className="text-sm text-gray-600">{subtitle}</p>}
       {extra}
-      <div className="flex gap-2 mt-2">{actions}</div>
+      {actions && <div className="flex gap-2 mt-2">{actions}</div>}
     </div>
   );
 }
@@ -33,7 +34,8 @@ function EmptyState({ label }) {
   );
 }
 
-export default function MyAccountPage() {
+/* ------------------------- MAIN CONTENT ------------------------- */
+function MyAccountContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialTab = searchParams.get("tab") || "vehicles";
@@ -43,11 +45,15 @@ export default function MyAccountPage() {
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
 
-  // Example backend-ready fetch
+  // Sync tab with URL
+  useEffect(() => {
+    setTab(initialTab);
+  }, [initialTab]);
+
+  // Fetch data from backend (example only)
   useEffect(() => {
     async function fetchData() {
       try {
-        // Replace these with your backend endpoints
         const [vehRes, prodRes, servRes] = await Promise.all([
           fetch("/api/vehicles"),
           fetch("/api/products"),
@@ -90,7 +96,7 @@ export default function MyAccountPage() {
 
       {/* Vehicles */}
       {tab === "vehicles" && (
-        <div>
+        <section>
           <h2 className="text-xl font-semibold mb-4">My Vehicles</h2>
           {vehicles.length ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -120,12 +126,12 @@ export default function MyAccountPage() {
           ) : (
             <EmptyState label="vehicles" />
           )}
-        </div>
+        </section>
       )}
 
       {/* Products */}
       {tab === "products" && (
-        <div>
+        <section>
           <h2 className="text-xl font-semibold mb-4">My Products</h2>
           {products.length ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -154,12 +160,12 @@ export default function MyAccountPage() {
           ) : (
             <EmptyState label="products" />
           )}
-        </div>
+        </section>
       )}
 
       {/* Services */}
       {tab === "services" && (
-        <div>
+        <section>
           <h2 className="text-xl font-semibold mb-4">My Services</h2>
           {services.length ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -188,18 +194,27 @@ export default function MyAccountPage() {
           ) : (
             <EmptyState label="services" />
           )}
-        </div>
+        </section>
       )}
 
       {/* Home */}
       {tab === "home" && (
-        <div>
+        <section>
           <h2 className="text-xl font-semibold mb-4">Welcome to My Account</h2>
           <p className="text-gray-600">
             Manage your vehicles, products, and services from one place.
           </p>
-        </div>
+        </section>
       )}
     </div>
+  );
+}
+
+
+export default function MyAccountPage() {
+  return (
+    <Suspense fallback={<div className="p-6">Loading account...</div>}>
+      <MyAccountContent />
+    </Suspense>
   );
 }

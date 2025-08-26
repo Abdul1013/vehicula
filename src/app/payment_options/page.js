@@ -1,11 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState,Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CreditCard, Calendar, Clock } from "lucide-react";
 
 // type PaymentOption = "full" | "installment" | "paylater";
-
-export default function PaymentOptions() {
+function PaymentOptionsContent() {
   const [selected, setSelected] = useState("full");
   const [installmentAmount, setInstallmentAmount] = useState("");
   const [reminder, setReminder] = useState("weekly");
@@ -137,5 +136,12 @@ export default function PaymentOptions() {
         Continue to Payment
       </button>
     </div>
+  );
+}
+export default function PaymentOptions() {
+  return (
+    <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
+      <PaymentOptionsContent />
+    </Suspense>
   );
 }
