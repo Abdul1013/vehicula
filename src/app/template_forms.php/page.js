@@ -297,9 +297,9 @@
 // }
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
-export default function AccountPage() {
+function AccountContent() {
   const searchParams = useSearchParams();
   const opt = searchParams.get("opt");
 
@@ -363,7 +363,10 @@ export default function AccountPage() {
       <main className="container mx-auto p-4">
         {/* Back Button */}
         <div className="mb-4">
-          <a href="/account" className="text-blue-600 hover:underline flex items-center gap-2">
+          <a
+            href="/account"
+            className="text-blue-600 hover:underline flex items-center gap-2"
+          >
             <i className="fas fa-long-arrow-alt-left"></i> Back
           </a>
         </div>
@@ -371,10 +374,14 @@ export default function AccountPage() {
         {/* Conditional Sections */}
         {opt === "add-vehicle" && (
           <div className="bg-white shadow rounded-lg p-6 max-w-xl mx-auto">
-            <h2 className="text-center text-xl font-semibold mb-6">Add Vehicle</h2>
+            <h2 className="text-center text-xl font-semibold mb-6">
+              Add Vehicle
+            </h2>
             <form onSubmit={handleSubmit("vehicle")} className="space-y-4">
               <div>
-                <label className="block mb-1 font-medium">Vehicle Plate Number</label>
+                <label className="block mb-1 font-medium">
+                  Vehicle Plate Number
+                </label>
                 <input
                   type="text"
                   name="plate"
@@ -385,7 +392,9 @@ export default function AccountPage() {
                 />
               </div>
               <div>
-                <label className="block mb-1 font-medium">Re-enter Plate Number</label>
+                <label className="block mb-1 font-medium">
+                  Re-enter Plate Number
+                </label>
                 <input
                   type="text"
                   name="plate1"
@@ -396,7 +405,9 @@ export default function AccountPage() {
                 />
               </div>
               <div>
-                <label className="block mb-1 font-medium">Vehicle Category</label>
+                <label className="block mb-1 font-medium">
+                  Vehicle Category
+                </label>
                 <select
                   name="category"
                   value={vehicleForm.category}
@@ -406,7 +417,9 @@ export default function AccountPage() {
                 >
                   <option value="">Select category</option>
                   {vehicleCategories.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -421,7 +434,9 @@ export default function AccountPage() {
                 >
                   <option value="">Select type</option>
                   {vehicleTypes.map((t) => (
-                    <option key={t.id} value={t.id}>{t.name}</option>
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -436,7 +451,9 @@ export default function AccountPage() {
 
         {opt === "add-product" && (
           <div className="bg-white shadow rounded-lg p-6 max-w-xl mx-auto">
-            <h2 className="text-center text-xl font-semibold mb-6">Add Product</h2>
+            <h2 className="text-center text-xl font-semibold mb-6">
+              Add Product
+            </h2>
             <form onSubmit={handleSubmit("product")} className="space-y-4">
               <div>
                 <label className="block mb-1 font-medium">Product Name</label>
@@ -481,7 +498,9 @@ export default function AccountPage() {
 
         {opt === "add-service" && (
           <div className="bg-white shadow rounded-lg p-6 max-w-xl mx-auto">
-            <h2 className="text-center text-xl font-semibold mb-6">Add Service</h2>
+            <h2 className="text-center text-xl font-semibold mb-6">
+              Add Service
+            </h2>
             <form onSubmit={handleSubmit("service")} className="space-y-4">
               <div>
                 <label className="block mb-1 font-medium">Service Name</label>
@@ -526,7 +545,9 @@ export default function AccountPage() {
 
         {opt === "add-document" && (
           <div className="bg-white shadow rounded-lg p-6 max-w-xl mx-auto">
-            <h2 className="text-center text-xl font-semibold mb-6">Upload Document</h2>
+            <h2 className="text-center text-xl font-semibold mb-6">
+              Upload Document
+            </h2>
             <form onSubmit={handleSubmit("document")} className="space-y-4">
               <div>
                 <label className="block mb-1 font-medium">Document Name</label>
@@ -582,5 +603,13 @@ export default function AccountPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
+      <AccountContent />
+    </Suspense>
   );
 }

@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function ServiceForm({ v }) {
+export default function ServiceForm({ v = {}  }) {
   const uInfo = v.u_info || {};
   const [formData, setFormData] = useState({
     s_full_name: v.srv_full_name || '',
