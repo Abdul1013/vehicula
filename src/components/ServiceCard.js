@@ -12,7 +12,8 @@ export default function ServiceCard({ service, selectedId, toggleSelect }) {
     <button
       onClick={() => {
         toggleSelect(service);
-        router.push("/service_qty_form");
+        router.push("/service_request_form");
+        // router.push("/service_qty_form");
       }}
       className={`bg-gray-100 rounded-xl shadow-sm hover:shadow-md transition p-5 flex items-start gap-4 ${
         isSelected ? "bg-black text-white" : ""
