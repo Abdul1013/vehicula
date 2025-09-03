@@ -1,0 +1,839 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model biz_listings {
+  b_id          Int             @id @default(autoincrement())
+  b_name        String          @unique(map: "b_name") @db.VarChar(200)
+  b_contact     String          @db.VarChar(200)
+  b_phone       String          @unique(map: "b_phone") @db.VarChar(20)
+  b_email       String          @unique(map: "b_email") @db.VarChar(200)
+  b_status      Int             @default(1) @db.TinyInt
+  b_hierarchy   String          @db.VarChar(2000)
+  b_comm        String          @db.VarChar(500)
+  b_entry_date  DateTime        @db.DateTime(0)
+  terminal_repo terminal_repo[]
+}
+
+model bk_repository {
+  bk_uid                                                                                         BigInt                             @id @default(autoincrement())
+  bk_email                                                                                       String                             @unique(map: "bk_email") @db.VarChar(100)
+  bk_usr_role_fk                                                                                 Int                                @default(1)
+  bk_hash                                                                                        String                             @db.VarChar(500)
+  bk_hash_update                                                                                 Int                                @default(0) @db.TinyInt
+  bk_phone_number                                                                                String?                            @unique(map: "bk_phone_number") @db.VarChar(20)
+  bk_customer_full_name                                                                          String?                            @db.VarChar(500)
+  bk_address                                                                                     String?                            @db.VarChar(500)
+  bk_photo                                                                                       String?                            @db.VarChar(1000)
+  bk_status                                                                                      Int                                @default(1) @db.TinyInt
+  bk_phone_verified                                                                              Int                                @default(1) @db.TinyInt
+  bk_email_verified                                                                              Int                                @default(1) @db.TinyInt
+  bk_entry_date                                                                                  DateTime                           @db.DateTime(0)
+  bk_my_ref_code                                                                                 String?                            @db.VarChar(10)
+  bk_ref_code                                                                                    String?                            @db.VarChar(10)
+  bk_agent_id                                                                                    BigInt?
+  bk_agent_date                                                                                  BigInt?
+  bk_terminal_id                                                                                 BigInt?
+  bk_default_region                                                                              Int                                @default(3)
+  bk_lga                                                                                         String?                            @db.VarChar(100)
+  bk_initial_deposit_perc                                                                        Decimal?                           @db.Decimal(10, 2)
+  bk_interest_perc                                                                               Decimal?                           @db.Decimal(10, 2)
+  bk_loan_duration                                                                               Int?
+  bk_score                                                                                       Int                                @default(0)
+  bk_va_agent                                                                                    Int?                               @default(0) @db.TinyInt
+  bk_va_agent_approved                                                                           Int?                               @default(0) @db.TinyInt
+  bk_va_agent_approved_by                                                                        BigInt?
+  bk_va_agent_approved_on                                                                        DateTime?                          @db.DateTime(0)
+  bk_va_join_date                                                                                DateTime?                          @db.DateTime(0)
+  bk_p2p_customer                                                                                Int?                               @default(0) @db.TinyInt
+  bk_p2p_join_date                                                                               DateTime?                          @db.DateTime(0)
+  bk_p2p_approved                                                                                Int?                               @default(0) @db.TinyInt
+  bk_p2p_approved_by                                                                             BigInt?
+  bk_p2p_approved_on                                                                             DateTime?                          @db.DateTime(0)
+  regions                                                                                        regions                            @relation(fields: [bk_default_region], references: [reg_id], onDelete: NoAction, map: "bk_repository_ibfk_1")
+  vehicle_customer_score                                                                         vehicle_customer_score[]
+  vehicle_customer_service_options_vehicle_customer_service_options_vcso_uidTobk_repository      vehicle_customer_service_options[] @relation("vehicle_customer_service_options_vcso_uidTobk_repository")
+  vehicle_customer_service_options_vehicle_customer_service_options_vcso_entry_byTobk_repository vehicle_customer_service_options[] @relation("vehicle_customer_service_options_vcso_entry_byTobk_repository")
+  vehicle_pay_gate_unsaved                                                                       vehicle_pay_gate_unsaved[]
+  vehicle_product                                                                                vehicle_product[]
+  vehicle_product_history                                                                        vehicle_product_history[]
+  vehicle_product_users                                                                          vehicle_product_users[]
+  vehicle_product_users_history                                                                  vehicle_product_users_history[]
+  vehicle_score_shift_vehicle_score_shift_vcss_shift_byTobk_repository                           vehicle_score_shift[]              @relation("vehicle_score_shift_vcss_shift_byTobk_repository")
+  vehicle_score_shift_vehicle_score_shift_vcss_uidTobk_repository                                vehicle_score_shift[]              @relation("vehicle_score_shift_vcss_uidTobk_repository")
+  vehicle_service_mannual_update_vehicle_service_mannual_update_vsmu_entry_byTobk_repository     vehicle_service_mannual_update[]   @relation("vehicle_service_mannual_update_vsmu_entry_byTobk_repository")
+  vehicle_service_mannual_update_vehicle_service_mannual_update_vsmu_updated_byTobk_repository   vehicle_service_mannual_update[]   @relation("vehicle_service_mannual_update_vsmu_updated_byTobk_repository")
+  vehicle_service_pg_recheck                                                                     vehicle_service_pg_recheck[]
+  vehicle_service_request_vehicle_service_request_vsr_uidTobk_repository                         vehicle_service_request[]          @relation("vehicle_service_request_vsr_uidTobk_repository")
+  vehicle_service_request_vehicle_service_request_vsr_cover_issued_byTobk_repository             vehicle_service_request[]          @relation("vehicle_service_request_vsr_cover_issued_byTobk_repository")
+  vehicle_service_request_vehicle_service_request_vsr_delivery_byTobk_repository                 vehicle_service_request[]          @relation("vehicle_service_request_vsr_delivery_byTobk_repository")
+  vehicle_service_request_vehicle_service_request_vsr_engage_ds_byTobk_repository                vehicle_service_request[]          @relation("vehicle_service_request_vsr_engage_ds_byTobk_repository")
+  vehicle_service_request_vehicle_service_request_vsr_prevent_transfer_byTobk_repository         vehicle_service_request[]          @relation("vehicle_service_request_vsr_prevent_transfer_byTobk_repository")
+  vehicle_service_request_vehicle_service_request_vsr_in_progress_byTobk_repository              vehicle_service_request[]          @relation("vehicle_service_request_vsr_in_progress_byTobk_repository")
+  vehicle_service_transfers_vehicle_service_transfers_vst_uid_sourceTobk_repository              vehicle_service_transfers[]        @relation("vehicle_service_transfers_vst_uid_sourceTobk_repository")
+  vehicle_service_transfers_vehicle_service_transfers_vst_uid_destinationTobk_repository         vehicle_service_transfers[]        @relation("vehicle_service_transfers_vst_uid_destinationTobk_repository")
+  vehicle_service_transfers_vehicle_service_transfers_vst_action_byTobk_repository               vehicle_service_transfers[]        @relation("vehicle_service_transfers_vst_action_byTobk_repository")
+  vehicle_sub_transactions                                                                       vehicle_sub_transactions[]
+  vehicle_sub_transactions_history                                                               vehicle_sub_transactions_history[]
+  vehicle_subscriptions                                                                          vehicle_subscriptions[]
+  vehicle_subscriptions_history                                                                  vehicle_subscriptions_history[]
+  vehiculars_otp_req_log                                                                         vehiculars_otp_req_log[]
+  vehicule_plate_numbers                                                                         vehicule_plate_numbers[]
+
+  @@index([bk_default_region], map: "bk_default_region")
+  @@index([bk_usr_role_fk], map: "bk_usr_role_fk")
+}
+
+model commission_structure {
+  com_id       Int      @id @default(autoincrement())
+  serv_cat_id  Int
+  serv_id      Int
+  com_perc     Int
+  com_max_amnt Decimal  @default(0.00) @db.Decimal(10, 2)
+  com_last_by  BigInt
+  com_last_on  DateTime @db.DateTime(0)
+
+  @@unique([serv_cat_id, serv_id], map: "serv_cat_id")
+}
+
+model dl_application {
+  uid                      BigInt    @id
+  first_name               String?   @db.VarChar(50)
+  surname                  String?   @db.VarChar(50)
+  other_name               String?   @db.VarChar(50)
+  mother_maiden_name       String?   @db.VarChar(50)
+  date_of_birth            String?   @db.VarChar(20)
+  facial_mark              String?   @db.VarChar(50)
+  blood_group              String?   @db.VarChar(10)
+  any_form_of_disability   String?   @db.VarChar(50)
+  height                   String?   @db.VarChar(10)
+  sex                      String?   @db.VarChar(10)
+  licence_class            String?   @db.VarChar(10)
+  next_of_kin_phone_number String?   @db.VarChar(11)
+  state_of_origin          String?   @db.VarChar(50)
+  local_government         String?   @db.VarChar(50)
+  address                  String?   @db.VarChar(200)
+  phone_number             String?   @db.VarChar(11)
+  email_address            String?   @db.VarChar(50)
+  nin                      String?   @db.VarChar(20)
+  date_created             DateTime? @db.DateTime(0)
+}
+
+model payout_completed_transactions {
+  p_c_id       BigInt   @id @default(autoincrement())
+  p_c_uid      BigInt   @unique(map: "p_c_uid")
+  p_c_amnt     Decimal  @db.Decimal(10, 2)
+  p_c_earnings Decimal  @db.Decimal(10, 2)
+  p_c_date     DateTime @db.DateTime(0)
+  p_c_by       BigInt
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model payout_transactions {
+  p_o_ref        String    @id @db.VarChar(25)
+  p_o_uid_fk     BigInt?
+  p_o_term_id    BigInt?
+  p_o_type       Int       @default(1) @db.TinyInt
+  p_o_date       DateTime  @db.DateTime(0)
+  p_o_amnt       Decimal   @db.Decimal(10, 2)
+  p_o_by         BigInt?
+  p_o_status     Int       @default(0) @db.TinyInt
+  p_o_clear_date DateTime? @db.DateTime(0)
+  p_o_note       String?   @db.VarChar(500)
+
+  @@index([p_o_term_id], map: "p_o_term_id")
+  @@index([p_o_uid_fk], map: "p_o_uid_fk")
+}
+
+model regions {
+  reg_id        Int             @id @default(autoincrement())
+  reg_label     String          @unique(map: "reg_label") @db.VarChar(50)
+  reg_abbrev    String          @unique(map: "reg_abbrev") @db.VarChar(25)
+  bk_repository bk_repository[]
+}
+
+model sms_logs {
+  sms_ref       String   @id @db.VarChar(50)
+  sms_msg       String   @db.VarChar(250)
+  sms_number    String   @db.VarChar(20)
+  sms_sender    String   @db.VarChar(15)
+  sms_status    Int      @db.TinyInt
+  sms_response  String?  @db.MediumText
+  sms_timestamp DateTime @db.DateTime(0)
+}
+
+model terminal_repo {
+  t_id             BigInt       @id @default(autoincrement())
+  t_name           String       @db.VarChar(200)
+  t_phone          String       @unique(map: "t_phone") @db.VarChar(20)
+  t_phone_verified Int          @default(0) @db.TinyInt
+  t_email          String       @unique(map: "t_email") @db.VarChar(200)
+  t_email_verified Int          @default(0) @db.TinyInt
+  t_hash           String       @db.VarChar(500)
+  t_hash_update    Int          @default(1) @db.TinyInt
+  t_role           Int          @db.TinyInt
+  t_b_id_fk        Int
+  t_parent         BigInt?
+  t_entry_date     DateTime     @db.DateTime(0)
+  biz_listings     biz_listings @relation(fields: [t_b_id_fk], references: [b_id], onDelete: NoAction, map: "terminal_repo_ibfk_1")
+
+  @@index([t_b_id_fk], map: "t_b_id_fk")
+}
+
+model tr_otp_req_log {
+  otp_log_id BigInt   @id @default(autoincrement())
+  otp_uid_fk BigInt
+  otp_code   String   @db.VarChar(50)
+  otp_date   DateTime @db.DateTime(0)
+
+  @@index([otp_uid_fk], map: "otp_uid_fk")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model va_allocated {
+  v_a_id                  BigInt                  @id @default(autoincrement())
+  v_a_r_id                BigInt
+  v_a_uid                 BigInt
+  v_a_status              Int                     @default(0) @db.TinyInt
+  v_a_status_change_date  DateTime                @db.DateTime(0)
+  v_a_amnt                Decimal                 @db.Decimal(10, 2)
+  v_a_dur                 String                  @db.VarChar(20)
+  v_a_start_time          DateTime                @db.DateTime(0)
+  v_a_estimated_end       DateTime                @db.DateTime(0)
+  v_a_actual_end          DateTime?               @db.DateTime(0)
+  v_a_entry_date          DateTime                @db.DateTime(0)
+  vehicle_service_request vehicle_service_request @relation(fields: [v_a_r_id], references: [vsr_id], onDelete: NoAction, map: "va_allocated_ibfk_1")
+  va_repo                 va_repo                 @relation(fields: [v_a_uid], references: [v_id], onDelete: NoAction, map: "va_allocated_ibfk_2")
+
+  @@unique([v_a_r_id, v_a_uid], map: "v_a_r_id_2")
+  @@index([v_a_r_id], map: "v_a_r_id")
+  @@index([v_a_uid], map: "v_a_uid")
+}
+
+model va_location {
+  l_id    Int       @id @default(autoincrement())
+  l_name  String?   @db.VarChar(100)
+  va_repo va_repo[]
+}
+
+model va_otp_req_log {
+  otp_log_id BigInt   @id @default(autoincrement())
+  otp_uid_fk BigInt
+  otp_code   String   @db.VarChar(50)
+  otp_date   DateTime @db.DateTime(0)
+
+  @@index([otp_uid_fk], map: "otp_uid_fk")
+}
+
+model va_repo {
+  v_id                    BigInt                    @id @default(autoincrement())
+  v_l_id_fk               Int
+  v_lga                   String?                   @db.VarChar(100)
+  v_services              String                    @db.VarChar(500)
+  v_name                  String                    @db.VarChar(200)
+  v_phone                 String                    @unique(map: "v_phone") @db.VarChar(20)
+  v_phone_verified        Int                       @default(0) @db.TinyInt
+  v_email                 String                    @unique(map: "v_email") @db.VarChar(200)
+  v_email_verified        Int                       @default(0) @db.TinyInt
+  v_hash                  String                    @db.VarChar(500)
+  v_hash_update           Int                       @default(1) @db.TinyInt
+  v_status                Int                       @default(1) @db.TinyInt
+  v_entry_date            DateTime                  @db.DateTime(0)
+  va_allocated            va_allocated[]
+  va_location             va_location               @relation(fields: [v_l_id_fk], references: [l_id], onDelete: NoAction, map: "va_repo_ibfk_1")
+  vehicle_service_request vehicle_service_request[]
+
+  @@index([v_l_id_fk], map: "v_l_id_fk")
+}
+
+model vehicle_categories {
+  v_cat_id               Int                      @id @default(autoincrement())
+  v_cat_name             String                   @unique(map: "v_cat_name") @db.VarChar(250)
+  vehicle_documents      vehicle_documents[]
+  vehicle_price_chart    vehicle_price_chart[]
+  vehicule_plate_numbers vehicule_plate_numbers[]
+}
+
+model vehicle_credit_points {
+  vcp_id    Int    @id @default(autoincrement())
+  vcp_name  String @db.VarChar(50)
+  vcp_point Int
+}
+
+model vehicle_customer_score {
+  vcs_id        BigInt        @id @default(autoincrement())
+  vcs_uid       BigInt
+  vcs_score     Int
+  vcs_date      DateTime      @db.DateTime(0)
+  vcs_pay_ref   String?       @db.VarChar(50)
+  bk_repository bk_repository @relation(fields: [vcs_uid], references: [bk_uid], onDelete: NoAction, map: "vehicle_customer_score_ibfk_1")
+
+  @@index([vcs_uid], map: "vcs_uid")
+}
+
+model vehicle_customer_service_options {
+  vcso_id                                                                     BigInt              @id @default(autoincrement())
+  vcso_uid                                                                    BigInt
+  vcso_vss_id                                                                 Int
+  vcso_financing_amnt                                                         Decimal?            @db.Decimal(10, 2)
+  vcso_unit_amnt                                                              Decimal?            @db.Decimal(10, 2)
+  vcso_interest                                                               Decimal?            @db.Decimal(10, 2)
+  vcso_initial_deposit_perc                                                   Decimal?            @db.Decimal(10, 2)
+  vcso_initial_deposit                                                        Decimal?            @db.Decimal(10, 2)
+  vcso_duration                                                               Int?
+  vcso_payment_options                                                        String?             @db.VarChar(50)
+  vcso_entry_by                                                               BigInt
+  vcso_entry_date                                                             DateTime            @db.DateTime(0)
+  bk_repository_vehicle_customer_service_options_vcso_uidTobk_repository      bk_repository       @relation("vehicle_customer_service_options_vcso_uidTobk_repository", fields: [vcso_uid], references: [bk_uid], onDelete: NoAction, map: "vehicle_customer_service_options_ibfk_1")
+  vehicle_service_sub                                                         vehicle_service_sub @relation(fields: [vcso_vss_id], references: [vss_id], onDelete: NoAction, map: "vehicle_customer_service_options_ibfk_2")
+  bk_repository_vehicle_customer_service_options_vcso_entry_byTobk_repository bk_repository       @relation("vehicle_customer_service_options_vcso_entry_byTobk_repository", fields: [vcso_entry_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_customer_service_options_ibfk_3")
+
+  @@unique([vcso_uid, vcso_vss_id], map: "vcso_uid_2")
+  @@index([vcso_entry_by], map: "vcso_entry_by")
+  @@index([vcso_uid], map: "vcso_uid")
+  @@index([vcso_vss_id], map: "vcso_vss_id")
+}
+
+model vehicle_documents {
+  v_d_id             Int                @id @default(autoincrement())
+  v_d_cat_id_fk      Int
+  v_d_name           String             @db.VarChar(200)
+  v_d_order          Int                @db.TinyInt
+  vehicle_categories vehicle_categories @relation(fields: [v_d_cat_id_fk], references: [v_cat_id], onDelete: NoAction, map: "vehicle_documents_ibfk_1")
+
+  @@index([v_d_cat_id_fk], map: "v_d_cat_id_fk")
+}
+
+model vehicle_news_letter {
+  n_l_id    BigInt   @id @default(autoincrement())
+  n_l_email String   @unique(map: "n_l_email") @db.VarChar(100)
+  n_l_date  DateTime @db.DateTime(0)
+}
+
+model vehicle_notify_settings {
+  vns_id   Int    @id @default(autoincrement())
+  vns_name String @db.VarChar(200)
+  vns_val  String @db.Text
+}
+
+model vehicle_pay_gate_unsaved {
+  p_g_id         Int            @id @default(autoincrement())
+  p_g_usr_fk     BigInt?
+  p_g_amnt       Decimal        @db.Decimal(10, 2)
+  p_g_reference  String         @db.VarChar(50)
+  p_g_entry_date DateTime       @db.DateTime(0)
+  bk_repository  bk_repository? @relation(fields: [p_g_usr_fk], references: [bk_uid], onDelete: NoAction, map: "vehicle_pay_gate_unsaved_ibfk_1")
+
+  @@index([p_g_usr_fk], map: "p_g_usr_fk")
+}
+
+model vehicle_price_chart {
+  v_p_id                        Int                             @id @default(autoincrement())
+  v_p_cat_fk                    Int
+  v_p_type_fk                   Int
+  v_p_h_id_fk                   Int
+  v_p_amount                    Decimal                         @default(0.00) @db.Decimal(10, 2)
+  v_p_is_full                   Int                             @default(0) @db.TinyInt
+  vehicle_categories            vehicle_categories              @relation(fields: [v_p_cat_fk], references: [v_cat_id], onDelete: NoAction, map: "vehicle_price_chart_ibfk_1")
+  vehicle_price_chart_headings  vehicle_price_chart_headings    @relation(fields: [v_p_h_id_fk], references: [v_p_h_id], onDelete: NoAction, map: "vehicle_price_chart_ibfk_2")
+  vehicle_type                  vehicle_type                    @relation(fields: [v_p_type_fk], references: [v_type_id], onDelete: NoAction, map: "vehicle_price_chart_ibfk_3")
+  vehicle_subscriptions         vehicle_subscriptions[]
+  vehicle_subscriptions_history vehicle_subscriptions_history[]
+
+  @@unique([v_p_cat_fk, v_p_type_fk, v_p_h_id_fk], map: "v_p_cat_fk_2")
+  @@index([v_p_cat_fk], map: "v_p_cat_fk")
+  @@index([v_p_h_id_fk], map: "v_p_h_id_fk")
+  @@index([v_p_type_fk], map: "v_p_type_fk")
+}
+
+model vehicle_price_chart_headings {
+  v_p_h_id            Int                   @id @default(autoincrement())
+  v_p_h_name          String                @unique(map: "v_p_h_name") @db.VarChar(250)
+  v_p_h_desc          String?               @db.VarChar(2000)
+  vehicle_price_chart vehicle_price_chart[]
+}
+
+model vehicle_product {
+  v_pr_id         BigInt        @id @default(autoincrement())
+  v_pr_uid_fk     BigInt
+  v_pr_amnt       Decimal       @default(0.00) @db.Decimal(10, 2)
+  v_pr_code       String        @db.VarChar(10)
+  v_pr_ref        String        @db.VarChar(50)
+  v_pr_trans_date DateTime      @db.DateTime(0)
+  v_pr_update_by  BigInt?
+  v_pr_update_on  DateTime?     @db.DateTime(0)
+  v_p_u_id_fk     BigInt?
+  bk_repository   bk_repository @relation(fields: [v_pr_uid_fk], references: [bk_uid], onDelete: NoAction, map: "vehicle_product_ibfk_1")
+
+  @@index([v_p_u_id_fk], map: "v_p_u_id_fk")
+  @@index([v_pr_uid_fk], map: "v_pr_uid_fk")
+}
+
+model vehicle_product_history {
+  v_pr_id         BigInt        @id
+  v_pr_uid_fk     BigInt
+  v_pr_amnt       Decimal       @default(0.00) @db.Decimal(10, 2)
+  v_pr_code       String        @db.VarChar(10)
+  v_pr_ref        String        @db.VarChar(50)
+  v_pr_trans_date DateTime      @db.DateTime(0)
+  v_pr_update_by  BigInt?
+  v_pr_update_on  DateTime?     @db.DateTime(0)
+  v_p_u_id_fk     BigInt?
+  bk_repository   bk_repository @relation(fields: [v_pr_uid_fk], references: [bk_uid], onDelete: NoAction, map: "vehicle_product_history_ibfk_1")
+
+  @@index([v_p_u_id_fk], map: "v_p_u_id_fk")
+  @@index([v_pr_uid_fk], map: "v_pr_uid_fk")
+}
+
+model vehicle_product_users {
+  v_p_u_id                BigInt        @id @default(autoincrement())
+  v_p_u_code              String        @db.VarChar(10)
+  v_p_u_uid               BigInt
+  v_p_u_budget            Decimal       @db.Decimal(10, 2)
+  v_p_u_installments      Int
+  v_p_u_entry_date        DateTime      @db.DateTime(0)
+  v_p_u_update_by         BigInt?
+  v_p_u_update_on         DateTime?     @db.DateTime(0)
+  v_p_u_cover_note_issued Int           @default(0) @db.TinyInt
+  v_p_u_cover_note_by     String?       @db.VarChar(500)
+  v_p_u_cover_issue_date  DateTime?     @db.DateTime(0)
+  v_p_u_ds_sent           Int           @default(0) @db.TinyInt
+  v_p_u_ds_by             String?       @db.VarChar(500)
+  v_p_u_ds_date           DateTime?     @db.DateTime(0)
+  v_p_u_cover_upload      String?       @db.VarChar(2000)
+  bk_repository           bk_repository @relation(fields: [v_p_u_uid], references: [bk_uid], onDelete: NoAction, map: "vehicle_product_users_ibfk_1")
+
+  @@unique([v_p_u_code, v_p_u_uid], map: "v_p_u_code")
+  @@index([v_p_u_uid], map: "v_p_u_uid")
+}
+
+model vehicle_product_users_history {
+  v_p_u_id                BigInt        @id
+  v_p_u_code              String        @db.VarChar(10)
+  v_p_u_uid               BigInt
+  v_p_u_budget            Decimal       @db.Decimal(10, 2)
+  v_p_u_installments      Int
+  v_p_u_entry_date        DateTime      @db.DateTime(0)
+  v_p_u_update_by         BigInt?
+  v_p_u_update_on         DateTime?     @db.DateTime(0)
+  v_p_u_cover_note_issued Int           @default(0) @db.TinyInt
+  v_p_u_cover_note_by     String?       @db.VarChar(500)
+  v_p_u_cover_issue_date  DateTime?     @db.DateTime(0)
+  v_p_u_ds_sent           Int           @default(0) @db.TinyInt
+  v_p_u_ds_by             String?       @db.VarChar(500)
+  v_p_u_ds_date           DateTime?     @db.DateTime(0)
+  v_p_u_cover_upload      String?       @db.VarChar(2000)
+  bk_repository           bk_repository @relation(fields: [v_p_u_uid], references: [bk_uid], onDelete: NoAction, map: "vehicle_product_users_history_ibfk_1")
+
+  @@index([v_p_u_uid], map: "v_p_u_uid")
+}
+
+model vehicle_reminders {
+  rem_uid        BigInt   @id @default(autoincrement())
+  rem_email      String   @db.VarChar(100)
+  rem_phone      String   @db.VarChar(20)
+  rem_name       String   @db.VarChar(500)
+  rem_plate      String   @db.VarChar(50)
+  rem_exp_date   DateTime @db.Date
+  rem_entry_date DateTime @db.DateTime(0)
+
+  @@unique([rem_plate, rem_exp_date], map: "rem_plate")
+}
+
+model vehicle_score_shift {
+  vcss_id                                                        BigInt         @id @default(autoincrement())
+  vcss_uid                                                       BigInt
+  vcss_old_val                                                   Int
+  vcss_new_val                                                   Int
+  vcss_entry_date                                                DateTime       @db.DateTime(0)
+  vcss_status                                                    Int            @default(0) @db.TinyInt
+  vcss_shift_by                                                  BigInt?
+  vcss_shift_on                                                  DateTime?      @db.DateTime(0)
+  vcss_new_duration                                              Decimal?       @db.Decimal(10, 2)
+  vcss_new_deposit                                               Decimal?       @db.Decimal(10, 2)
+  vcss_new_perc                                                  Decimal?       @db.Decimal(10, 2)
+  bk_repository_vehicle_score_shift_vcss_shift_byTobk_repository bk_repository? @relation("vehicle_score_shift_vcss_shift_byTobk_repository", fields: [vcss_shift_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_score_shift_ibfk_1")
+  bk_repository_vehicle_score_shift_vcss_uidTobk_repository      bk_repository  @relation("vehicle_score_shift_vcss_uidTobk_repository", fields: [vcss_uid], references: [bk_uid], onDelete: NoAction, map: "vehicle_score_shift_ibfk_2")
+
+  @@index([vcss_shift_by], map: "vcss_shift_by")
+  @@index([vcss_uid], map: "vcss_uid")
+}
+
+model vehicle_service_badge {
+  v_bg_id       Int    @id @default(autoincrement())
+  v_bg_start_at Int
+  v_bg_end_at   Int
+  v_bg_label    String @db.VarChar(100)
+  v_bg_color    String @db.VarChar(50)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model vehicle_service_batch {
+  vsb_id                    String                      @id @db.VarChar(50)
+  vsb_entry_date            DateTime                    @db.DateTime(0)
+  vsb_upload                String?                     @db.VarChar(1000)
+  vsb_upload_str            String?                     @db.VarChar(1000)
+  vsb_upload_cnt            Int?
+  vsb_payment_options       String?                     @db.VarChar(50)
+  vsb_label                 String?                     @db.VarChar(100)
+  vsb_pay_amount            Decimal?                    @db.Decimal(10, 2)
+  vsb_pay_total             Decimal?                    @db.Decimal(10, 2)
+  vsb_pay_option            Int?                        @db.TinyInt
+  vsb_reminder_option       Int?                        @db.TinyInt
+  vsb_pg_last_attempt_date  DateTime?                   @db.DateTime(0)
+  vsb_last_pay_split        String?                     @db.VarChar(500)
+  vehicle_service_batch_pay vehicle_service_batch_pay[]
+  vehicle_service_request   vehicle_service_request[]
+}
+
+model vehicle_service_batch_pay {
+  vsbp_id                 BigInt                @id @default(autoincrement())
+  vsbp_batch_id_fk        String                @db.VarChar(50)
+  vsbp_pay_split          String                @db.VarChar(500)
+  vsbp_pay_split_original String                @db.VarChar(500)
+  vsbp_amnt               Decimal               @db.Decimal(10, 2)
+  vsbp_amnt_original      Decimal               @db.Decimal(10, 2)
+  vsbp_ref                String                @db.VarChar(50)
+  vsbp_pay_load           String?               @db.LongText
+  vsbp_trans_date         DateTime              @db.DateTime(0)
+  vehicle_service_batch   vehicle_service_batch @relation(fields: [vsbp_batch_id_fk], references: [vsb_id], onDelete: NoAction, map: "vehicle_service_batch_pay_ibfk_1")
+
+  @@index([vsbp_batch_id_fk], map: "vsbp_batch_id_fk")
+  @@index([vsbp_ref], map: "vsbp_ref")
+}
+
+model vehicle_service_clone {
+  vsc_id           Int      @id @default(autoincrement())
+  vsc_region       Int
+  vsc_name         Int
+  vsc_service      Int
+  vsc_status       Int      @db.TinyInt
+  vsc_clone_region Int
+  vsc_last_entry   DateTime @db.DateTime(0)
+
+  @@unique([vsc_region, vsc_name, vsc_service], map: "vsc_region_2")
+}
+
+model vehicle_service_mannual_update {
+  vsmu_id                                                                     BigInt                  @id @default(autoincrement())
+  vsmu_vsr_id                                                                 BigInt
+  vsmu_uid                                                                    BigInt
+  vsmu_entry_date                                                             DateTime                @db.DateTime(0)
+  vsmu_entry_by                                                               BigInt
+  vsmu_status                                                                 Int                     @default(0) @db.TinyInt
+  vsmu_updated_by                                                             BigInt?
+  vsmu_updated_on                                                             DateTime?               @db.DateTime(0)
+  vehicle_service_request                                                     vehicle_service_request @relation(fields: [vsmu_vsr_id], references: [vsr_id], onDelete: NoAction, map: "vehicle_service_mannual_update_ibfk_1")
+  bk_repository_vehicle_service_mannual_update_vsmu_entry_byTobk_repository   bk_repository           @relation("vehicle_service_mannual_update_vsmu_entry_byTobk_repository", fields: [vsmu_entry_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_mannual_update_ibfk_2")
+  bk_repository_vehicle_service_mannual_update_vsmu_updated_byTobk_repository bk_repository?          @relation("vehicle_service_mannual_update_vsmu_updated_byTobk_repository", fields: [vsmu_updated_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_mannual_update_ibfk_3")
+
+  @@index([vsmu_entry_by], map: "vsmu_entry_by")
+  @@index([vsmu_uid], map: "vsmu_uid")
+  @@index([vsmu_updated_by], map: "vsmu_updated_by")
+  @@index([vsmu_vsr_id], map: "vsmu_vsr_id")
+}
+
+model vehicle_service_pg_recheck {
+  pg_ref        String        @id @db.VarChar(50)
+  pg_batch_id   String?       @db.VarChar(50)
+  pg_load       String?       @db.LongText
+  pg_check_date DateTime      @db.DateTime(0)
+  pg_check_by   BigInt
+  bk_repository bk_repository @relation(fields: [pg_check_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_pg_recheck_ibfk_1")
+
+  @@index([pg_check_by], map: "pg_check_by")
+}
+
+model vehicle_service_request {
+  vsr_id                                                                                              BigInt                           @id @default(autoincrement())
+  vss_id_fk                                                                                           Int
+  vsr_unit_price                                                                                      Decimal?                         @db.Decimal(10, 2)
+  vsr_interest                                                                                        Decimal?                         @db.Decimal(10, 2)
+  vsr_unit_interest_amnt                                                                              Decimal?                         @db.Decimal(10, 2)
+  vsr_total_interest_amnt                                                                             Decimal?                         @db.Decimal(10, 2)
+  vsr_initial_deposit_perc                                                                            Decimal?                         @db.Decimal(10, 2)
+  vsr_loan_duration                                                                                   Int?
+  vsr_initial_deposit                                                                                 Decimal?                         @db.Decimal(10, 2)
+  vsr_qty                                                                                             Int                              @default(1)
+  vsr_total_deposit                                                                                   Decimal?                         @db.Decimal(10, 2)
+  vsr_total_unit_with_interest                                                                        Decimal?                         @db.Decimal(10, 2)
+  vsr_total_unit                                                                                      Decimal?                         @db.Decimal(10, 2)
+  vsr_status                                                                                          Int                              @default(0) @db.TinyInt
+  vsr_price_lock                                                                                      Int                              @default(0) @db.TinyInt
+  vsr_delivery_date                                                                                   DateTime?                        @db.DateTime(0)
+  vsr_next_renewal                                                                                    DateTime?                        @db.Date
+  vsr_delivery_notes                                                                                  String?                          @db.VarChar(1000)
+  vsr_delivery_by                                                                                     BigInt?
+  vsr_cover_note_issued                                                                               Int                              @default(0) @db.TinyInt
+  vsr_cover_note_issued_on                                                                            DateTime?                        @db.DateTime(0)
+  vsr_cover_issued_by                                                                                 BigInt?
+  vsr_engage_ds                                                                                       Int?                             @default(0) @db.TinyInt
+  vsr_engage_ds_on                                                                                    DateTime?                        @db.DateTime(0)
+  vsr_engage_ds_by                                                                                    BigInt?
+  vsr_prevent_transfer                                                                                Int                              @default(0) @db.TinyInt
+  vsr_prevent_transfer_by                                                                             BigInt?
+  vsr_prevent_transfer_on                                                                             DateTime?                        @db.DateTime(0)
+  vsr_in_progress                                                                                     Int                              @default(0) @db.TinyInt
+  vsr_in_progress_by                                                                                  BigInt?
+  vsr_in_progress_on                                                                                  DateTime?                        @db.DateTime(0)
+  vsr_full_name                                                                                       String?                          @db.VarChar(200)
+  vsr_phone                                                                                           String?                          @db.VarChar(150)
+  vsr_dob                                                                                             DateTime?                        @db.Date
+  vsr_address                                                                                         String?                          @db.VarChar(500)
+  vsr_batch_id                                                                                        String                           @db.VarChar(50)
+  vsr_uid                                                                                             BigInt
+  vsr_prevent_general_update                                                                          Int                              @default(0) @db.TinyInt
+  vsr_reminder_opt                                                                                    Int?                             @db.TinyInt
+  vsr_entry_date                                                                                      DateTime                         @db.DateTime(0)
+  vsr_va_price                                                                                        Decimal?                         @db.Decimal(10, 2)
+  vsr_va_duration                                                                                     String?                          @db.VarChar(10)
+  vsr_va_id                                                                                           BigInt?
+  vsr_va_approved                                                                                     Int?                             @default(0) @db.TinyInt
+  va_allocated                                                                                        va_allocated[]
+  vehicle_service_mannual_update                                                                      vehicle_service_mannual_update[]
+  vehicle_service_sub                                                                                 vehicle_service_sub              @relation(fields: [vss_id_fk], references: [vss_id], onDelete: NoAction, map: "vehicle_service_request_ibfk_1")
+  bk_repository_vehicle_service_request_vsr_uidTobk_repository                                        bk_repository                    @relation("vehicle_service_request_vsr_uidTobk_repository", fields: [vsr_uid], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_request_ibfk_2")
+  vehicle_service_batch                                                                               vehicle_service_batch            @relation(fields: [vsr_batch_id], references: [vsb_id], onDelete: NoAction, map: "vehicle_service_request_ibfk_3")
+  bk_repository_vehicle_service_request_vsr_cover_issued_byTobk_repository                            bk_repository?                   @relation("vehicle_service_request_vsr_cover_issued_byTobk_repository", fields: [vsr_cover_issued_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_request_ibfk_4")
+  bk_repository_vehicle_service_request_vsr_delivery_byTobk_repository                                bk_repository?                   @relation("vehicle_service_request_vsr_delivery_byTobk_repository", fields: [vsr_delivery_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_request_ibfk_5")
+  bk_repository_vehicle_service_request_vsr_engage_ds_byTobk_repository                               bk_repository?                   @relation("vehicle_service_request_vsr_engage_ds_byTobk_repository", fields: [vsr_engage_ds_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_request_ibfk_6")
+  bk_repository_vehicle_service_request_vsr_prevent_transfer_byTobk_repository                        bk_repository?                   @relation("vehicle_service_request_vsr_prevent_transfer_byTobk_repository", fields: [vsr_prevent_transfer_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_request_ibfk_7")
+  bk_repository_vehicle_service_request_vsr_in_progress_byTobk_repository                             bk_repository?                   @relation("vehicle_service_request_vsr_in_progress_byTobk_repository", fields: [vsr_in_progress_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_request_ibfk_8")
+  va_repo                                                                                             va_repo?                         @relation(fields: [vsr_va_id], references: [v_id], onDelete: NoAction, map: "vehicle_service_request_ibfk_9")
+  vehicle_service_transfers_vehicle_service_transfers_vst_req_id_sourceTovehicle_service_request      vehicle_service_transfers[]      @relation("vehicle_service_transfers_vst_req_id_sourceTovehicle_service_request")
+  vehicle_service_transfers_vehicle_service_transfers_vst_req_id_destinationTovehicle_service_request vehicle_service_transfers[]      @relation("vehicle_service_transfers_vst_req_id_destinationTovehicle_service_request")
+
+  @@index([vsr_batch_id], map: "vsr_batch_id")
+  @@index([vsr_cover_issued_by], map: "vsr_cover_issued_by")
+  @@index([vsr_delivery_by], map: "vsr_delivery_by")
+  @@index([vsr_engage_ds_by], map: "vsr_engage_ds_by")
+  @@index([vsr_in_progress_by], map: "vsr_in_progress_by")
+  @@index([vsr_prevent_transfer_by], map: "vsr_prevent_transfer_by")
+  @@index([vsr_uid], map: "vsr_uid")
+  @@index([vsr_va_id], map: "vsr_va_id")
+  @@index([vss_id_fk], map: "vss_id_fk")
+}
+
+model vehicle_service_sub {
+  vss_id                           Int                                @id @default(autoincrement())
+  vss_name                         String                             @db.VarChar(200)
+  vss_region                       Int
+  vss_amount                       Decimal                            @db.Decimal(10, 2)
+  vss_status                       Int                                @default(1) @db.TinyInt
+  vss_priority                     Int                                @default(1)
+  vss_icon                         String?                            @db.VarChar(50)
+  vs_id_fk                         Int
+  vss_interest                     Decimal?                           @db.Decimal(10, 2)
+  vss_initial_deposit_perc         Decimal?                           @db.Decimal(10, 2)
+  vss_initial_deposit              Decimal?                           @db.Decimal(10, 2)
+  vss_duration                     Int?
+  vss_finance_amnt                 Decimal?                           @db.Decimal(10, 2)
+  vss_price_lock_perc              Decimal?                           @db.Decimal(10, 2)
+  vss_va_price                     Decimal?                           @db.Decimal(10, 2)
+  vss_va_duration                  String?                            @db.VarChar(10)
+  vehicle_customer_service_options vehicle_customer_service_options[]
+  vehicle_service_request          vehicle_service_request[]
+
+  @@unique([vss_name, vss_region, vs_id_fk], map: "vss_name")
+  @@index([vs_id_fk], map: "vs_id_fk")
+  @@index([vss_region], map: "vss_region")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model vehicle_service_transfers {
+  vst_id                                                                                            String                  @id @db.VarChar(50)
+  vst_initiate_date                                                                                 DateTime                @db.DateTime(0)
+  vst_req_id_source                                                                                 BigInt
+  vst_req_id_destination                                                                            BigInt
+  vst_amnt                                                                                          Decimal                 @db.Decimal(10, 2)
+  vst_type                                                                                          Int                     @default(1) @db.TinyInt
+  vst_uid_source                                                                                    BigInt
+  vst_uid_destination                                                                               BigInt
+  vst_status                                                                                        Int                     @db.TinyInt
+  vst_action_by                                                                                     BigInt?
+  vst_action_on                                                                                     DateTime?               @db.DateTime(0)
+  vehicle_service_request_vehicle_service_transfers_vst_req_id_sourceTovehicle_service_request      vehicle_service_request @relation("vehicle_service_transfers_vst_req_id_sourceTovehicle_service_request", fields: [vst_req_id_source], references: [vsr_id], onDelete: NoAction, map: "vehicle_service_transfers_ibfk_1")
+  vehicle_service_request_vehicle_service_transfers_vst_req_id_destinationTovehicle_service_request vehicle_service_request @relation("vehicle_service_transfers_vst_req_id_destinationTovehicle_service_request", fields: [vst_req_id_destination], references: [vsr_id], onDelete: NoAction, map: "vehicle_service_transfers_ibfk_2")
+  bk_repository_vehicle_service_transfers_vst_uid_sourceTobk_repository                             bk_repository           @relation("vehicle_service_transfers_vst_uid_sourceTobk_repository", fields: [vst_uid_source], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_transfers_ibfk_3")
+  bk_repository_vehicle_service_transfers_vst_uid_destinationTobk_repository                        bk_repository           @relation("vehicle_service_transfers_vst_uid_destinationTobk_repository", fields: [vst_uid_destination], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_transfers_ibfk_4")
+  bk_repository_vehicle_service_transfers_vst_action_byTobk_repository                              bk_repository?          @relation("vehicle_service_transfers_vst_action_byTobk_repository", fields: [vst_action_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_service_transfers_ibfk_5")
+
+  @@index([vst_action_by], map: "vst_action_by")
+  @@index([vst_req_id_destination], map: "vst_req_id_destination")
+  @@index([vst_req_id_source], map: "vst_req_id_source")
+  @@index([vst_uid_destination], map: "vst_uid_destination")
+  @@index([vst_uid_source], map: "vst_uid_source")
+}
+
+model vehicle_services {
+  v_s_id       Int    @id @default(autoincrement())
+  v_s_name     String @unique(map: "v_s_name") @db.VarChar(200)
+  v_s_status   Int    @default(1) @db.TinyInt
+  v_s_priority Int    @db.TinyInt
+  v_s_icon     String @db.VarChar(50)
+}
+
+model vehicle_sub_plan_heading {
+  s_p_heading_id                Int                             @id @default(autoincrement())
+  s_p_heading_name              String                          @unique(map: "s_p_heading_name") @db.VarChar(200)
+  s_p_duration                  Int                             @db.TinyInt
+  vehicle_subscriptions         vehicle_subscriptions[]
+  vehicle_subscriptions_history vehicle_subscriptions_history[]
+}
+
+model vehicle_sub_transactions {
+  v_t_id                String                @id @db.VarChar(25)
+  v_t_sub_id_fk         BigInt
+  v_t_amount            Decimal               @default(0.00) @db.Decimal(10, 2)
+  v_t_amnt_paid         Decimal               @default(0.00) @db.Decimal(10, 2)
+  v_t_note              String?               @db.MediumText
+  v_t_date              DateTime              @db.DateTime(0)
+  v_t_entry_by          BigInt
+  v_t_entry_on          DateTime              @db.DateTime(0)
+  v_t_last_update_by    BigInt?
+  v_t_last_update_on    DateTime?             @db.DateTime(0)
+  vehicle_subscriptions vehicle_subscriptions @relation(fields: [v_t_sub_id_fk], references: [v_s_id], onDelete: NoAction, map: "vehicle_sub_transactions_ibfk_1")
+  bk_repository         bk_repository         @relation(fields: [v_t_entry_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_sub_transactions_ibfk_2")
+
+  @@index([v_t_entry_by], map: "v_t_entry_by")
+  @@index([v_t_sub_id_fk], map: "v_t_sub_id_fk")
+}
+
+model vehicle_sub_transactions_history {
+  v_t_id                        String                        @id @db.VarChar(25)
+  v_t_sub_id_fk                 BigInt
+  v_t_amount                    Decimal                       @default(0.00) @db.Decimal(10, 2)
+  v_t_amnt_paid                 Decimal                       @default(0.00) @db.Decimal(10, 2)
+  v_t_note                      String?                       @db.MediumText
+  v_t_date                      DateTime                      @db.DateTime(0)
+  v_t_entry_by                  BigInt
+  v_t_entry_on                  DateTime                      @db.DateTime(0)
+  v_t_last_update_by            BigInt?
+  v_t_last_update_on            DateTime?                     @db.DateTime(0)
+  vehicle_subscriptions_history vehicle_subscriptions_history @relation(fields: [v_t_sub_id_fk], references: [v_s_id], onDelete: NoAction, map: "vehicle_sub_transactions_history_ibfk_1")
+  bk_repository                 bk_repository                 @relation(fields: [v_t_entry_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_sub_transactions_history_ibfk_2")
+
+  @@index([v_t_entry_by], map: "v_t_entry_by")
+  @@index([v_t_sub_id_fk], map: "v_t_sub_id_fk")
+}
+
+model vehicle_subscriptions {
+  v_s_id                   BigInt                     @id @default(autoincrement())
+  v_s_plate_id_fk          BigInt
+  v_s_chart_id_fk          Int
+  v_s_expiry_date          DateTime                   @db.Date
+  v_s_issue_date           DateTime?                  @db.Date
+  v_s_amount               Decimal                    @default(0.00) @db.Decimal(10, 2)
+  v_s_plan_id_fk           Int
+  v_s_doc_upload           String?                    @db.VarChar(2000)
+  v_s_entry_by             BigInt
+  v_s_entry_on             DateTime                   @db.DateTime(0)
+  v_s_status               Int                        @default(0) @db.TinyInt
+  v_s_notes                String?                    @db.MediumText
+  v_s_last_update_by       BigInt?
+  v_s_last_update_on       DateTime?                  @db.DateTime(0)
+  v_s_cover_note_issued    Int                        @default(0) @db.TinyInt
+  v_s_cover_note_by        String?                    @db.VarChar(500)
+  v_s_cover_issue_date     DateTime?                  @db.DateTime(0)
+  v_s_cover_upload         String?                    @db.VarChar(2000)
+  vehicle_sub_transactions vehicle_sub_transactions[]
+  vehicle_price_chart      vehicle_price_chart        @relation(fields: [v_s_chart_id_fk], references: [v_p_id], onDelete: NoAction, map: "vehicle_subscriptions_ibfk_1")
+  vehicule_plate_numbers   vehicule_plate_numbers     @relation(fields: [v_s_plate_id_fk], references: [v_plate_id], onDelete: NoAction, map: "vehicle_subscriptions_ibfk_2")
+  bk_repository            bk_repository              @relation(fields: [v_s_entry_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_subscriptions_ibfk_3")
+  vehicle_sub_plan_heading vehicle_sub_plan_heading   @relation(fields: [v_s_plan_id_fk], references: [s_p_heading_id], onDelete: NoAction, map: "vehicle_subscriptions_ibfk_4")
+
+  @@unique([v_s_plate_id_fk, v_s_chart_id_fk, v_s_expiry_date], map: "v_s_plate_id_fk_2")
+  @@index([v_s_chart_id_fk], map: "v_s_chart_id_fk")
+  @@index([v_s_entry_by], map: "v_s_entry_by")
+  @@index([v_s_plan_id_fk], map: "v_s_plan_id_fk")
+  @@index([v_s_plate_id_fk], map: "v_s_plate_id_fk")
+}
+
+model vehicle_subscriptions_history {
+  v_s_id                           BigInt                             @id
+  v_s_plate_id_fk                  BigInt
+  v_s_chart_id_fk                  Int
+  v_s_expiry_date                  DateTime                           @db.Date
+  v_s_issue_date                   DateTime?                          @db.Date
+  v_s_amount                       Decimal                            @default(0.00) @db.Decimal(10, 2)
+  v_s_plan_id_fk                   Int
+  v_s_doc_upload                   String?                            @db.VarChar(2000)
+  v_s_entry_by                     BigInt
+  v_s_entry_on                     DateTime                           @db.DateTime(0)
+  v_s_status                       Int                                @default(0) @db.TinyInt
+  v_s_notes                        String?                            @db.MediumText
+  v_s_last_update_by               BigInt?
+  v_s_last_update_on               DateTime?                          @db.DateTime(0)
+  v_s_cover_note_issued            Int                                @default(0) @db.TinyInt
+  v_s_cover_note_by                String?                            @db.VarChar(500)
+  v_s_cover_issue_date             DateTime?                          @db.DateTime(0)
+  v_s_cover_upload                 String?                            @db.VarChar(2000)
+  vehicle_sub_transactions_history vehicle_sub_transactions_history[]
+  vehicle_price_chart              vehicle_price_chart                @relation(fields: [v_s_chart_id_fk], references: [v_p_id], onDelete: NoAction, map: "vehicle_subscriptions_history_ibfk_1")
+  vehicule_plate_numbers           vehicule_plate_numbers             @relation(fields: [v_s_plate_id_fk], references: [v_plate_id], onDelete: NoAction, map: "vehicle_subscriptions_history_ibfk_2")
+  bk_repository                    bk_repository                      @relation(fields: [v_s_entry_by], references: [bk_uid], onDelete: NoAction, map: "vehicle_subscriptions_history_ibfk_3")
+  vehicle_sub_plan_heading         vehicle_sub_plan_heading           @relation(fields: [v_s_plan_id_fk], references: [s_p_heading_id], onDelete: NoAction, map: "vehicle_subscriptions_history_ibfk_4")
+
+  @@unique([v_s_plate_id_fk, v_s_chart_id_fk, v_s_expiry_date], map: "v_s_plate_id_fk_2")
+  @@index([v_s_chart_id_fk], map: "v_s_chart_id_fk")
+  @@index([v_s_entry_by], map: "v_s_entry_by")
+  @@index([v_s_plan_id_fk], map: "v_s_plan_id_fk")
+  @@index([v_s_plate_id_fk], map: "v_s_plate_id_fk")
+}
+
+model vehicle_surplus_pay {
+  v_sr_id                String                 @id @db.VarChar(20)
+  v_sr_plate_id_fk       BigInt
+  v_sr_amount            Decimal                @db.Decimal(10, 2)
+  v_sr_amount_paid       Decimal                @default(0.00) @db.Decimal(10, 2)
+  v_sr_entry_by          BigInt
+  v_sr_entry_on          DateTime               @db.DateTime(0)
+  vehicule_plate_numbers vehicule_plate_numbers @relation(fields: [v_sr_plate_id_fk], references: [v_plate_id], onDelete: NoAction, map: "vehicle_surplus_pay_ibfk_1")
+
+  @@index([v_sr_plate_id_fk], map: "v_sr_plate_id_fk")
+}
+
+model vehicle_type {
+  v_type_id              Int                      @id @default(autoincrement())
+  v_type_name            String                   @unique(map: "v_type_name") @db.VarChar(250)
+  v_type_order           Int                      @db.TinyInt
+  v_type_icon            String                   @db.VarChar(50)
+  v_type_img             String?                  @db.VarChar(1000)
+  vehicle_price_chart    vehicle_price_chart[]
+  vehicule_plate_numbers vehicule_plate_numbers[]
+}
+
+model vehiculars_otp_req_log {
+  otp_log_id    BigInt        @id @default(autoincrement())
+  otp_uid_fk    BigInt
+  otp_code      String        @db.VarChar(50)
+  otp_date      DateTime      @db.DateTime(0)
+  bk_repository bk_repository @relation(fields: [otp_uid_fk], references: [bk_uid], onDelete: Cascade, map: "vehiculars_otp_req_log_ibfk_1")
+
+  @@index([otp_uid_fk], map: "otp_uid_fk")
+}
+
+model vehicule_plate_numbers {
+  v_plate_id                    BigInt                          @id @default(autoincrement())
+  v_plate_no                    String                          @unique(map: "v_plate_no") @db.VarChar(50)
+  v_person_id                   BigInt
+  v_type_fk                     Int
+  v_cat_fk                      Int
+  v_plate_status                Int                             @default(1) @db.TinyInt
+  v_plate_entry_date            DateTime                        @db.DateTime(0)
+  vehicle_subscriptions         vehicle_subscriptions[]
+  vehicle_subscriptions_history vehicle_subscriptions_history[]
+  vehicle_surplus_pay           vehicle_surplus_pay[]
+  bk_repository                 bk_repository                   @relation(fields: [v_person_id], references: [bk_uid], onDelete: NoAction, map: "vehicule_plate_numbers_ibfk_1")
+  vehicle_categories            vehicle_categories              @relation(fields: [v_cat_fk], references: [v_cat_id], onDelete: NoAction, map: "vehicule_plate_numbers_ibfk_2")
+  vehicle_type                  vehicle_type                    @relation(fields: [v_type_fk], references: [v_type_id], onDelete: NoAction, map: "vehicule_plate_numbers_ibfk_3")
+
+  @@index([v_cat_fk], map: "v_cat_fk")
+  @@index([v_person_id], map: "v_person_id")
+  @@index([v_type_fk], map: "v_type_fk")
+}
