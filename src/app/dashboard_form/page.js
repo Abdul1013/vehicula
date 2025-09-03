@@ -12,8 +12,9 @@ import Button from "@/components/ui/button";
 import ServicesDashboard from "@/components/user_dashboard/ServicesDashboard";
 import UserHeader from "@/components/user_dashboard/UserHeader";
 import DashBoardPage from "@/components/user_dashboard/DashBoardTemplate";
-import ChangeOfOwnership from "@/components/user_dashboard/changeOfOwnership";
+// import ChangeOfOwnership from "@/components/user_dashboard/changeOfOwnership";
 import DashboardTabs from "@/components/user_dashboard/DashboaedTabs";
+import LoanDashboard from "@/components/user_dashboard/LoanDashboard";
 
 export default function Dashboard() {
   // === Placeholder backend data (replace with API calls later) ===
@@ -51,12 +52,7 @@ export default function Dashboard() {
           );
         }
         return (
-          <Card className="shadow-md rounded-2xl p-4">
-            <h2 className="text-lg font-semibold mb-2">Loan Dashboard</h2>
-            <p className="text-gray-600">
-              [Placeholder: loan_dashboard_template]
-            </p>
-          </Card>
+          <LoanDashboard/>
         );
       default:
         return <DashBoardPage />;

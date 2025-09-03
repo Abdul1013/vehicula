@@ -2,8 +2,9 @@
 "use client";
 
 import { useState } from "react";
-
+import { useRouter } from "next/navigation";
 export default function LicenseApplication() {
+  const router = useRouter();
   const [form, setForm] = useState({
     uid: "12345",
     first_name: "",
@@ -36,6 +37,7 @@ export default function LicenseApplication() {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", form);
+    router.push("/payment_options")
     // TODO: Hook into API call
   };
 
@@ -46,7 +48,7 @@ export default function LicenseApplication() {
 
       <div className="container mx-auto px-4 py-8">
         <a
-          href="/dashboard_form"
+          href="/dl_page"
           className="inline-flex items-center text-green-600 hover:underline"
         >
           ← Back to Dashboard
@@ -171,6 +173,7 @@ export default function LicenseApplication() {
           {/* Submit */}
           <div className="text-center">
             <button
+          
               type="submit"
               className="rounded-xl bg-blue-600 px-6 py-3 text-white font-medium shadow-md hover:bg-blue-700 transition"
             >

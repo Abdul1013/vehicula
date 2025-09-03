@@ -138,7 +138,7 @@
 // }
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, Suspense} from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 /**
@@ -154,7 +154,7 @@ const formatNaira = (value) => {
   }
 };
 
-export default function QuantitySummaryPage() {
+function QuantitySummaryContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -432,5 +432,13 @@ export default function QuantitySummaryPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function QuantitySummaryPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-center">Loading...</div>}>
+      <QuantitySummaryContent />
+    </Suspense>
   );
 }

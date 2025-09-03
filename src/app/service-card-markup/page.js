@@ -1,33 +1,34 @@
-"use client"
+"use client";
 import { useState } from "react";
 
 export default function ServiceCard({
-  pCodeDetails,       // [total_paid, total_amount, installments]
-  productsArray,      // mapping product codes to names
-  showDLFormArray,    // array of codes that need DL forms
-  getUserDLInfo,      // function to get user license info
-  returnAmount,       // function to format amount
-  progressBg,         // function to get progress bar color class
-  currentUserId,      // session user id
+  pCodeDetails = [],   // ✅ default empty array
+  productsArray = {},
+  showDLFormArray = [],
+  getUserDLInfo = () => null,
+  returnAmount = (x) => x,
+  progressBg = () => "",
+  currentUserId = null,
 }) {
   const [showDelete, setShowDelete] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const [totalPaid, totalAmount, installments] = pCodeDetails;
-  const productName = productsArray?.[pCodeDetails?.[3]] || "Unknown Product"; // Assuming pCode is passed as index 3
-  let percentagePaid = 0;
+  // ✅ Defensive destructuring
+  const [totalPaid = 0, totalAmount = 0, installments = 0, pCode = null] =
+    Array.isArray(pCodeDetails) ? pCodeDetails : [];
 
-  if (totalAmount > 0) {
-    if (totalPaid > 0) {
-      percentagePaid = Math.round((totalPaid / totalAmount) * 100);
-      percentagePaid = Math.min(percentagePaid, 100);
-    }
-  } else {
+  const productName = productsArray?.[pCode] || "Unknown Product";
+
+  let percentagePaid = 0;
+  if (totalAmount > 0 && totalPaid > 0) {
+    percentagePaid = Math.round((totalPaid / totalAmount) * 100);
+    percentagePaid = Math.min(percentagePaid, 100);
+  } else if (totalAmount <= 0) {
     percentagePaid = 100;
   }
 
   const progressClass = progressBg(percentagePaid);
-  const hasDLForm = showDLFormArray.includes(pCodeDetails[3]);
+  const hasDLForm = showDLFormArray.includes(pCode);
   const dlInfo = hasDLForm ? getUserDLInfo(currentUserId) : null;
   const applicationTitle = dlInfo !== "-1" ? "View application" : "Fill application";
 
@@ -44,13 +45,14 @@ export default function ServiceCard({
             {totalAmount > 0 && (
               <a
                 className="d-block card-sm-font py-1"
-                href={`operations?opt=add-service&id=${pCodeDetails[3]}&edit=true`}
+                href={`operations?opt=add-service&id=${pCode}&edit=true`}
               >
                 <i className="fas fa-edit me-1"></i>Edit details
               </a>
             )}
           </h5>
 
+          {/* progress bar */}
           <div className="row py-2">
             <div className="col-12 pt-2">
               <div className="progress" style={{ height: "30px" }}>
@@ -66,7 +68,7 @@ export default function ServiceCard({
                 </div>
               </div>
 
-              {hasDLForm && (
+              {hasDLForm ? (
                 <div className="row">
                   <div className="col-5 pt-2">
                     <a
@@ -83,9 +85,7 @@ export default function ServiceCard({
                     <span className="fs-6">{returnAmount(totalAmount)}</span>
                   </div>
                 </div>
-              )}
-
-              {!hasDLForm && (
+              ) : (
                 <div className="text-end">
                   <span className="fs-4 text-success">{returnAmount(totalPaid)}</span>
                   <span className="fs-4">/</span>
@@ -104,7 +104,7 @@ export default function ServiceCard({
               You have not yet set a budget! <br />
               <a
                 className="text-primary text-decoration-none"
-                href={`operations?opt=add-service&product_code=${pCodeDetails[3]}`}
+                href={`operations?opt=add-service&product_code=${pCode}`}
               >
                 Click here to set a budget
               </a>
@@ -113,20 +113,19 @@ export default function ServiceCard({
 
           <div className="row py-2 bg-light txtSizeNormal">
             <div className="col-6">
-              <a href={`operations?opt=service-pay&product_type=${pCodeDetails[3]}`}>
+              <a href={`operations?opt=service-pay&product_type=${pCode}`}>
                 <i className="fas fa-plus me-1"></i>Add Payment
               </a>
             </div>
             <div className="col-6 text-end">
-              <a
-                href={`my-account?view=services&product_code=${pCodeDetails[3]}&opt=receipt`}
-              >
+              <a href={`my-account?view=services&product_code=${pCode}&opt=receipt`}>
                 <i className="fas fa-history me-1"></i>Payment History
               </a>
             </div>
           </div>
         </div>
 
+        {/* Delete Button */}
         <button
           className="text-danger position-absolute del_icon_margin fs-4 top-0 end-0 border-0 bg-transparent"
           onClick={() => setShowDelete(true)}
@@ -134,6 +133,7 @@ export default function ServiceCard({
           <i className="fas fa-times-circle"></i>
         </button>
 
+        {/* Delete Confirm */}
         {showDelete && (
           <div className="py-2">
             <div className="txtSizeNormal">
