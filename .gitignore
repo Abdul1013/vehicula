@@ -43,3 +43,4 @@ next-env.d.ts
 /vendor/
 
 /src/generated/prisma
+vehicula_db.sql
