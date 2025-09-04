@@ -25,6 +25,7 @@ model bk_repository {
   bk_email                                                                                       String                             @unique(map: "bk_email") @db.VarChar(100)
   bk_usr_role_fk                                                                                 Int                                @default(1)
   bk_hash                                                                                        String                             @db.VarChar(500)
+  must_change_password                                                                           Boolean                            @default(false)
   bk_hash_update                                                                                 Int                                @default(0) @db.TinyInt
   bk_phone_number                                                                                String?                            @unique(map: "bk_phone_number") @db.VarChar(20)
   bk_customer_full_name                                                                          String?                            @db.VarChar(500)
