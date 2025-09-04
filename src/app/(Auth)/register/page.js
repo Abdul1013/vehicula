@@ -1,298 +1,10 @@
-// // pages/register.js
+// src/components/RegisterForm.jsx
 "use client";
-// import { useState, useEffect } from "react";
-// // import { getAllRegions, getUserByRefCode } from "../lib/users";
-// // import { withSsrSession } from "../lib/session";
-// // import cookie from "cookie";
-// // import fs from "fs";
-// // import path from "path";
-
-// export default function RegisterPage(props) {
-//   // props: v (prefill), getRegions (array), lgaMap (object), lock_ref (bool)
-//   const { v = {}, getRegions = [], lgaMap = {}, lock_ref = false } = props;
-
-//   const [form, setForm] = useState({
-//     phoneReg: v.phoneRe || "",
-//     emailReg: v.email || "",
-//     pwdReg: "",
-//     pwdRegC: "",
-//     nameReg: v.name || "",
-//     refReg: v.ref_code || "",
-//     locReg: v.location || "",
-//     lgaReg: v.lga || "",
-//   });
-//   const [error, setError] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [lgaOptions, setLgaOptions] = useState([]);
-
-//   useEffect(() => {
-//     if (form.locReg) {
-//       // find region label for id
-//       const region = getRegions.find((r) => String(r.reg_id) === String(form.locReg));
-//       if (region && lgaMap[region.reg_label]) {
-//         setLgaOptions(lgaMap[region.reg_label]);
-//       } else {
-//         setLgaOptions([]);
-//       }
-//     } else setLgaOptions([]);
-//   }, [form.locReg]);
-
-//   async function handleSubmit(e) {
-//     e.preventDefault();
-//     setLoading(true);
-//     setError("");
-
-//     try {
-//       const res = await fetch("/api/register", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify(form),
-//       });
-//       const data = await res.json();
-//       if (!res.ok) throw new Error(data.message || "Registration failed");
-//       // redirect
-//       if (data.redirectTo) {
-//         window.location.href = data.redirectTo;
-//       } else {
-//         window.location.href = "/dashboard";
-//       }
-//     } catch (err) {
-//       setError(err.message);
-//       setLoading(false);
-//     }
-//   }
-
-//   return (
-//     <div className="container mx-auto py-8">
-//       <div className="grid gap-6 md:grid-cols-2">
-//         <div>
-//           <h2 className="text-2xl text-primary mb-4">Let&apos;s get started!</h2>
-//           {/* features list (kept from original) */}
-//           <div className="space-y-3">
-//             <Feature icon="bell" label="Instant reminders" />
-//             <Feature icon="piggy-bank" label="Easy installments" />
-//             <Feature icon="stopwatch" label="Shorter processing time" />
-//             <Feature icon="headset" label="24/7 Customer support" />
-//           </div>
-//         </div>
-
-//         <div>
-//           {error && <div className="text-red-600 mb-4" dangerouslySetInnerHTML={{ __html: error }} />}
-//           <form id="submitRegisterForm" onSubmit={handleSubmit} className="space-y-3">
-//             <input
-//               name="phoneReg"
-//               type="tel"
-//               placeholder="Phone Number"
-//               value={form.phoneReg}
-//               onChange={(e) => setForm({ ...form, phoneReg: e.target.value })}
-//               required
-//               className="w-full p-3 rounded-full shadow"
-//             />
-
-//             <input
-//               name="emailReg"
-//               type="email"
-//               placeholder="Email ID"
-//               value={form.emailReg}
-//               onChange={(e) => setForm({ ...form, emailReg: e.target.value })}
-//               required
-//               className="w-full p-3 rounded-full shadow"
-//             />
-
-//             <PasswordInput id="lpwdReg" value={form.pwdReg} onChange={(v) => setForm({ ...form, pwdReg: v })} />
-//             <PasswordInput id="lpwdRegC" value={form.pwdRegC} onChange={(v) => setForm({ ...form, pwdRegC: v })} />
-
-//             <input
-//               name="nameReg"
-//               type="text"
-//               placeholder="Full name"
-//               value={form.nameReg}
-//               onChange={(e) => setForm({ ...form, nameReg: e.target.value })}
-//               required
-//               className="w-full p-3 rounded-full shadow"
-//             />
-
-//             <select
-//               name="locReg"
-//               id="locReg"
-//               required
-//               value={form.locReg}
-//               onChange={(e) => setForm({ ...form, locReg: e.target.value, lgaReg: "" })}
-//               className="w-full p-3 rounded-full shadow"
-//             >
-//               <option value="">Select state of residence</option>
-//               {getRegions !== "-1" &&
-//                 getRegions.map((r) => (
-//                   <option key={r.reg_id} value={r.reg_id}>
-//                     {r.reg_label}
-//                   </option>
-//                 ))}
-//             </select>
-
-//             <select
-//               name="lgaReg"
-//               id="lgaReg"
-//               required
-//               value={form.lgaReg}
-//               onChange={(e) => setForm({ ...form, lgaReg: e.target.value })}
-//               className="w-full p-3 rounded-full shadow"
-//             >
-//               <option value="">Select LGA of residence</option>
-//               {lgaOptions && lgaOptions.map((l) => <option key={l} value={l}>{l}</option>)}
-//             </select>
-
-//             <input
-//               name="refReg"
-//               type="text"
-//               placeholder="Promo code (Optional)"
-//               readOnly={lock_ref}
-//               value={form.refReg}
-//               onChange={(e) => setForm({ ...form, refReg: e.target.value })}
-//               className="w-full p-3 rounded-full shadow"
-//             />
-
-//             <button type="submit" disabled={loading} className="w-full py-3 rounded-full bg-blue-600 text-white">
-//               {loading ? "Registering..." : "Register"}
-//             </button>
-
-//             <div className="text-sm mt-2 text-center">
-//               <a href="/login" className="text-primary">Already a member? Login here.</a>
-//             </div>
-
-//             <div className="text-xs mt-4 text-center">
-//               When you Register, you agree to the <a href="/terms-and-conditions">Terms & Conditions</a>
-//             </div>
-//           </form>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// // small reusable components
-// function Feature({ icon, label }) {
-//   return (
-//     <div className="flex items-start gap-4">
-//       <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center">
-//         <i className={`fa fa-${icon}`} />
-//       </div>
-//       <div className="pt-1">
-//         <h6 className="font-semibold">{label}</h6>
-//       </div>
-//     </div>
-//   );
-// }
-
-// function PasswordInput({ id, value, onChange }) {
-//   const [show, setShow] = useState(false);
-//   return (
-//     <div className="relative">
-//       <input
-//         id={id}
-//         type={show ? "text" : "password"}
-//         value={value}
-//         onChange={(e) => onChange(e.target.value)}
-//         placeholder={id === "lpwdReg" ? "Password" : "Re-enter password"}
-//         required
-//         className="w-full p-3 rounded-full shadow"
-//       />
-//       <span
-//         onClick={() => setShow(!show)}
-//         className="absolute right-3 top-3 cursor-pointer text-primary"
-//       >
-//         <i className={`fas ${show ? "fa-eye-slash" : "fa-eye"}`} />
-//       </span>
-//     </div>
-//   );
-// }
-
-// /**
-//  * getServerSideProps:
-//  * - handles ?ref=...: validates via getUserByRefCode -> if valid, sets referral cookie and redirects to /register (without query)
-//  * - passes getRegions, v (prefill), lgaMap
-//  */
-// // export const getServerSideProps = withSsrSession(async ({ req, res, query }) => {
-// //   // Read regions via users helper
-// //   const getRegions = await getAllRegions(); // returns array or "-1"
-// //   // Load LGA JSON from public folder
-// //   const jsonPath = path.join(process.cwd(), "public", "img", "nigeria_states_lgas.json");
-// //   let lgaMap = {};
-// //   try {
-// //     if (fs.existsSync(jsonPath)) {
-// //       const jsonData = JSON.parse(fs.readFileSync(jsonPath, "utf-8"));
-// //       const stateLGA = {};
-// //       for (const s of jsonData.states || []) {
-// //         stateLGA[s.name] = s.lgas;
-// //       }
-// //       // produce mapping: reg_label -> lgas if region labels match state names
-// //       if (getRegions !== "-1") {
-// //         for (const r of getRegions) {
-// //           if (stateLGA[r.reg_label]) {
-// //             lgaMap[r.reg_label] = stateLGA[r.reg_label];
-// //           }
-// //         }
-// //       }
-// //     }
-// //   } catch (err) {
-// //     console.error("LGA JSON read error:", err);
-// //   }
-
-// //   // Handle referral query param
-// //   const REF_COOKIE = process.env.REFERRAL_COOKIE_NAME || "REFERRAL_STR";
-// //   if (query.ref) {
-// //     const ref_code = String(query.ref).trim().toLowerCase();
-// //     const refUser = await getUserByRefCode(ref_code);
-// //     if (refUser !== "-1") {
-// //       // check status (bk_status)
-// //       const u_status = parseInt(refUser[0].bk_status || 0, 10);
-// //       if (u_status === 1) {
-// //         // set cookie for 7 days and redirect to /register without query
-// //         const cookieHeader = cookie.serialize(REF_COOKIE, ref_code, {
-// //           maxAge: 7 * 24 * 60 * 60,
-// //           httpOnly: false,
-// //           path: "/",
-// //           secure: process.env.NODE_ENV === "production",
-// //         });
-// //         res.setHeader("Set-Cookie", cookieHeader);
-// //         return {
-// //           redirect: {
-// //             permanent: false,
-// //             destination: "/register",
-// //           },
-// //         };
-// //       }
-// //     }
-// //   }
-
-// //   // Pass props similar to $v in PHP
-// //   const v = {
-// //     detectMobile: /mobile|iphone|android/i.test(req.headers["user-agent"] || ""),
-// //     phoneRe: "",
-// //     name: "",
-// //     email: "",
-// //     ref_code: (req.cookies && req.cookies[REF_COOKIE]) || "",
-// //     location: "",
-// //     lga: "",
-// //     lga_markup: "",
-// //     error_txt: "",
-// //   };
-
-// //   const lock_ref = Boolean(req.cookies && req.cookies[REF_COOKIE]);
-
-// //   return {
-// //     props: {
-// //       v,
-// //       getRegions,
-// //       lgaMap,
-// //       lock_ref,
-// //     },
-// //   };
-// // });
-
-// components/RegisterForm.js
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
-const RegisterForm = ({ regions = [], defaultValues = {} }) => {
+const RegisterForm = ({ defaultValues = {} }) => {
   const [formData, setFormData] = useState({
     phone: defaultValues.phone || "",
     email: defaultValues.email || "",
@@ -303,54 +15,156 @@ const RegisterForm = ({ regions = [], defaultValues = {} }) => {
     lga: "",
     refCode: defaultValues.ref_code || "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [regions, setRegions] = useState([]);
   const [lgaOptions, setLgaOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const router = useRouter();
 
-  // Simulate fetching LGAs when state changes
+  // Fetch regions on mount
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        console.log("Fetching regions from /api/regions");
+        const response = await fetch("/api/regions");
+        if (!response.ok) {
+          throw new Error(`Failed to fetch regions: ${response.statusText}`);
+        }
+        const data = await response.json();
+        console.log("Regions fetched:", data);
+        setRegions(data);
+      } catch (error) {
+        console.error("Regions fetch error:", error);
+        toast.error("Failed to load regions. Please try again.", {
+          toastId: "regions-error",
+        });
+      }
+    };
+    fetchRegions();
+  }, []);
+
+  // Fetch LGAs when state changes
   useEffect(() => {
     if (formData.state) {
-      // replace this with your API call
-      setLgaOptions([
-        { id: 1, name: "LGA 1" },
-        { id: 2, name: "LGA 2" },
-      ]);
+      const fetchLgas = async () => {
+        try {
+          console.log(`Fetching LGAs for region: ${formData.state}`);
+          const response = await fetch(
+            `/api/lgas?region=${encodeURIComponent(formData.state)}`
+          );
+          if (!response.ok) {
+            throw new Error(`Failed to fetch LGAs: ${response.statusText}`);
+          }
+          const data = await response.json();
+          console.log("LGAs fetched:", data);
+          setLgaOptions(data);
+        } catch (error) {
+          console.error("LGAs fetch error:", error);
+          toast.error("Failed to load LGAs. Please try again.", {
+            toastId: "lgas-error",
+          });
+        }
+      };
+      fetchLgas();
     } else {
       setLgaOptions([]);
     }
   }, [formData.state]);
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.phone) newErrors.phone = "Phone number is required";
+    else if (!/^\+?\d{10,15}$/.test(formData.phone)) {
+      newErrors.phone = "Invalid phone number format";
+    }
+    if (!formData.email) newErrors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+    if (!formData.password) newErrors.password = "Password is required";
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Confirm password is required";
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords must match";
+    }
+    if (!formData.fullName) newErrors.fullName = "Full name is required";
+    if (!formData.state) newErrors.state = "State is required";
+    if (!formData.lga) newErrors.lga = "LGA is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted", formData);
-    // call your API here
+    if (!validateForm()) {
+      toast.error("Please fix the form errors", { toastId: "form-error" });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      console.log("Submitting registration:", formData);
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+      toast.success("Registration successful!", {
+        toastId: "register-success",
+      });
+      setFormData({
+        phone: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        fullName: "",
+        state: "",
+        lga: "",
+        refCode: "",
+      });
+      console.log("Registration successful:", data);
+      router.push("/dashboard_form");
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error(error.message, { toastId: "register-error" });
+    } finally {
+      setIsLoading(false);
+    }
   };
- const features = [
+
+  const features = [
     { icon: "fa-bell", text: "Instant reminders" },
     { icon: "fa-piggy-bank", text: "Easy installments" },
     { icon: "fa-stopwatch", text: "Shorter processing time" },
     { icon: "fa-headset", text: "24/7 Customer support" },
   ];
+
   return (
-    <div className="container-xxl bg-white hero-header mt-40 mb-0 text-primary">
+    <div className="container-xxl bg-white hero-header mt-30 mb-20 text-primary">
       <div className="container mx-auto px-4">
-        <div className="lg:flex lg:items-center lg:justify-around gap-8">
+        <div className="lg:flex lg:items-center lg:justify-center gap-16">
           {/* Left Side Features */}
-          <div className="flex flex-col items-center lg:items-start mb-10 mt-[-30px] text-center lg:text-left">
-            <h2 className="text-primary text-3xl font-bold mb-6">
+          <div className="flex flex-col items-center lg:items-start mb-10 mt-[-30px] text-center lg:text-left max-w-sm">
+            <h2 className="text-primary w-full text-3xl font-bold whitespace-nowrap mb-6">
               Let&apos;s get started!
             </h2>
             <div className="grid gap-4">
               {features.map((item, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-blue-600 rounded-full text-white">
-                    <i className={`fa ${item.icon}`}></i>
+                    <i className={`fa ${item.icon}`} />
                   </div>
                   <p className="text-gray-700 font-medium">{item.text}</p>
                 </div>
@@ -360,15 +174,45 @@ const RegisterForm = ({ regions = [], defaultValues = {} }) => {
 
           {/* Right Side Form */}
           <div className="flex items-center justify-center w-full px-4">
-            <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-lg">
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Input Field Template */}
+            <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+              <form onSubmit={handleSubmit} noValidate className="space-y-4">
                 {[
-                  { type: "number", name: "phone", placeholder: "Phone Number", icon: "fa-phone", required: true },
-                  { type: "email", name: "email", placeholder: "Email ID", icon: "fa-envelope", required: true },
-                  { type: showPassword ? "text" : "password", name: "password", placeholder: "Password", icon: "fa-eye", toggle: true },
-                  { type: showConfirmPassword ? "text" : "password", name: "confirmPassword", placeholder: "Re-enter password", icon: "fa-eye", toggle: true, confirm: true },
-                  { type: "text", name: "fullName", placeholder: "Full Name", icon: "fa-user", required: true },
+                  {
+                    type: "tel",
+                    name: "phone",
+                    placeholder: "Phone Number",
+                    icon: "fa-phone",
+                    required: true,
+                  },
+                  {
+                    type: "email",
+                    name: "email",
+                    placeholder: "Email ID",
+                    icon: "fa-envelope",
+                    required: true,
+                  },
+                  {
+                    type: showPassword ? "text" : "password",
+                    name: "password",
+                    placeholder: "Password",
+                    icon: "fa-eye",
+                    toggle: true,
+                  },
+                  {
+                    type: showConfirmPassword ? "text" : "password",
+                    name: "confirmPassword",
+                    placeholder: "Re-enter password",
+                    icon: "fa-eye",
+                    toggle: true,
+                    confirm: true,
+                  },
+                  {
+                    type: "text",
+                    name: "fullName",
+                    placeholder: "Full Name",
+                    icon: "fa-user",
+                    required: true,
+                  },
                 ].map((field, idx) => (
                   <div key={idx} className="relative">
                     <input
@@ -378,25 +222,52 @@ const RegisterForm = ({ regions = [], defaultValues = {} }) => {
                       onChange={handleChange}
                       placeholder={field.placeholder}
                       required={field.required}
-                      className="w-full pl-4 pr-12 py-3 rounded-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+                      className={`w-full pl-4 pr-12 py-3 rounded-full shadow-sm border ${
+                        errors[field.name]
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-blue-400"
+                      } focus:ring-2 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                      disabled={isLoading}
+                      aria-invalid={!!errors[field.name]}
+                      aria-describedby={
+                        errors[field.name] ? `${field.name}-error` : undefined
+                      }
                     />
                     <span
                       className={`absolute right-3 top-3 text-gray-600 text-lg ${
                         field.toggle ? "cursor-pointer" : "text-blue-500"
                       }`}
                       onClick={() => {
-                        if (field.name === "password") setShowPassword((prev) => !prev);
-                        if (field.name === "confirmPassword") setShowConfirmPassword((prev) => !prev);
+                        if (field.name === "password")
+                          setShowPassword(!showPassword);
+                        if (field.name === "confirmPassword")
+                          setShowConfirmPassword(!showConfirmPassword);
                       }}
                     >
                       <i
                         className={`fas ${
                           field.toggle
-                            ? formData[field.name] && (field.confirm ? (showConfirmPassword ? "fa-eye-slash" : "fa-eye") : showPassword ? "fa-eye-slash" : "fa-eye")
+                            ? formData[field.name] &&
+                              (field.confirm
+                                ? showConfirmPassword
+                                  ? "fa-eye-slash"
+                                  : "fa-eye"
+                                : showPassword
+                                  ? "fa-eye-slash"
+                                  : "fa-eye")
                             : field.icon
                         }`}
-                      ></i>
+                      />
                     </span>
+                    {errors[field.name] && (
+                      <p
+                        id={`${field.name}-error`}
+                        className="mt-1 text-sm text-red-500"
+                        role="alert"
+                      >
+                        {errors[field.name]}
+                      </p>
+                    )}
                   </div>
                 ))}
 
@@ -407,18 +278,34 @@ const RegisterForm = ({ regions = [], defaultValues = {} }) => {
                     value={formData.state}
                     onChange={handleChange}
                     required
-                    className="w-full pl-4 pr-12 py-3 rounded-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none appearance-none transition"
+                    className={`w-full pl-4 pr-12 py-3 rounded-full shadow-sm border ${
+                      errors.state
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-400"
+                    } focus:ring-2 focus:outline-none appearance-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                    disabled={isLoading}
+                    aria-invalid={!!errors.state}
+                    aria-describedby={errors.state ? "state-error" : undefined}
                   >
                     <option value="">Select state of residence</option>
                     {regions.map((reg) => (
-                      <option key={reg.reg_id} value={reg.reg_id}>
+                      <option key={reg.reg_id} value={reg.reg_label}>
                         {reg.reg_label}
                       </option>
                     ))}
                   </select>
                   <span className="absolute right-3 top-3 text-blue-500 text-lg">
-                    <i className="fa fa-globe-africa"></i>
+                    <i className="fa fa-globe-africa" />
                   </span>
+                  {errors.state && (
+                    <p
+                      id="state-error"
+                      className="mt-1 text-sm text-red-500"
+                      role="alert"
+                    >
+                      {errors.state}
+                    </p>
+                  )}
                 </div>
 
                 {/* LGA Select */}
@@ -428,18 +315,34 @@ const RegisterForm = ({ regions = [], defaultValues = {} }) => {
                     value={formData.lga}
                     onChange={handleChange}
                     required
-                    className="w-full pl-4 pr-12 py-3 rounded-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none appearance-none transition"
+                    className={`w-full pl-4 pr-12 py-3 rounded-full shadow-sm border ${
+                      errors.lga
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-blue-400"
+                    } focus:ring-2 focus:outline-none appearance-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+                    disabled={isLoading || !formData.state}
+                    aria-invalid={!!errors.lga}
+                    aria-describedby={errors.lga ? "lga-error" : undefined}
                   >
                     <option value="">Select LGA of residence</option>
                     {lgaOptions.map((lga) => (
-                      <option key={lga.id} value={lga.id}>
+                      <option key={lga.id} value={lga.name}>
                         {lga.name}
                       </option>
                     ))}
                   </select>
                   <span className="absolute right-3 top-3 text-blue-500 text-lg">
-                    <i className="fa fa-map-pin"></i>
+                    <i className="fa fa-map-pin" />
                   </span>
+                  {errors.lga && (
+                    <p
+                      id="lga-error"
+                      className="mt-1 text-sm text-red-500"
+                      role="alert"
+                    >
+                      {errors.lga}
+                    </p>
+                  )}
                 </div>
 
                 {/* Promo Code */}
@@ -450,31 +353,40 @@ const RegisterForm = ({ regions = [], defaultValues = {} }) => {
                     value={formData.refCode}
                     onChange={handleChange}
                     placeholder="Promo code (Optional)"
-                    className="w-full pl-4 pr-12 py-3 rounded-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition"
+                    className="w-full pl-4 pr-12 py-3 rounded-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    disabled={isLoading}
                   />
                   <span className="absolute right-3 top-3 text-blue-500 text-lg">
-                    <i className="fa fa-gift"></i>
+                    <i className="fa fa-gift" />
                   </span>
                 </div>
 
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
+                  className="w-full py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  disabled={isLoading}
                 >
-                  Register
+                  {isLoading ? "Registering..." : "Register"}
                 </button>
 
                 {/* Links */}
                 <p className="text-center text-sm text-gray-500">
                   Already a member?{" "}
-                  <a href="/login" className="text-blue-600 font-medium hover:underline">
+                  <a
+                    href="/login"
+                    className="text-blue-600 font-medium hover:underline"
+                  >
                     Login here
                   </a>
                 </p>
                 <p className="text-center text-xs text-gray-400 mt-4">
                   By registering, you agree to the{" "}
-                  <a href="/terms-and-conditions" className="text-blue-500 hover:underline" target="_blank">
+                  <a
+                    href="/terms-and-conditions"
+                    className="text-blue-500 hover:underline"
+                    target="_blank"
+                  >
                     Terms & Conditions
                   </a>
                 </p>
