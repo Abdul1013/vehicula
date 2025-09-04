@@ -242,7 +242,7 @@ export default function LoginPage() {
       }
 
       toast.success(
-        "Login successful! Use default password: Default@123 if reset.",
+        "Login successful! Welcome",
         { toastId: "login-success" }
       );
       console.log(

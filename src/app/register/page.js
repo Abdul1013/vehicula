@@ -400,3 +400,313 @@ const RegisterForm = ({ defaultValues = {} }) => {
 };
 
 export default RegisterForm;
+
+
+
+
+
+// // src/app/register/page.jsx
+// "use client";
+// import { useState, useEffect } from "react";
+// import { useRouter } from "next/navigation";
+// import { toast } from "react-toastify";
+
+// export default function RegisterForm() {
+//   const [phone, setPhone] = useState("");
+//   const [email, setEmail] = useState("");
+//   const [fullName, setFullName] = useState("");
+//   const [password, setPassword] = useState("");
+//   const [state, setState] = useState("");
+//   const [lga, setLga] = useState("");
+//   const [states, setStates] = useState([]);
+//   const [lgas, setLgas] = useState([]);
+//   const [errors, setErrors] = useState({});
+//   const [isLoading, setIsLoading] = useState(false);
+//   const router = useRouter();
+
+//   useEffect(() => {
+//     async function fetchStatesAndLgas() {
+//       try {
+//         const res = await fetch("/api/states-lgas");
+//         const data = await res.json();
+//         if (res.ok) {
+//           setStates(data.states);
+//         } else {
+//           console.error("Failed to fetch states and LGAs:", data.error);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching states and LGAs:", error);
+//       }
+//     }
+//     fetchStatesAndLgas();
+//   }, []);
+
+//   useEffect(() => {
+//     if (state) {
+//       const selectedState = states.find(s => s.state === state);
+//       setLgas(selectedState ? selectedState.lgas : []);
+//       setLga(""); // Reset LGA when state changes
+//     } else {
+//       setLgas([]);
+//       setLga("");
+//     }
+//   }, [state, states]);
+
+//   const validateForm = () => {
+//     const newErrors = {};
+//     if (!phone) newErrors.phone = "Phone number is required";
+//     else if (!/^\+?\d{10,15}$/.test(phone)) newErrors.phone = "Invalid phone number format";
+//     if (!email) newErrors.email = "Email is required";
+//     else if (!/\S+@\S+\.\S+/.test(email)) newErrors.email = "Invalid email format";
+//     if (!fullName) newErrors.fullName = "Full name is required";
+//     if (!password) newErrors.password = "Password is required";
+//     else if (password.length < 8 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+//       newErrors.password = "Password must be 8+ characters with uppercase and numbers";
+//     }
+//     setErrors(newErrors);
+//     return Object.keys(newErrors).length === 0;
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!validateForm()) {
+//       toast.error("Please fix the form errors", { toastId: "form-error" });
+//       return;
+//     }
+
+//     setIsLoading(true);
+//     try {
+//       const normalizedPhone = phone.trim().replace(/^\+/, "");
+//       console.log("Sending register request:", { phone: normalizedPhone, email, fullName, state, lga });
+//       const res = await fetch("/api/auth/register", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ phone: normalizedPhone, email, fullName, password, state, lga }),
+//       });
+
+//       const data = await res.json();
+//       console.log("Register response:", data);
+
+//       if (!res.ok) {
+//         throw new Error(data.error || "Registration failed");
+//       }
+
+//       toast.success("Registration successful!", { toastId: "register-success" });
+//       console.log("Redirecting to /dashboard_form");
+//       router.replace("/dashboard_form");
+//     } catch (err) {
+//       console.error("Register error:", err.message);
+//       toast.error(
+//         err.message === "Phone number or email already registered"
+//           ? "Phone number or email already registered"
+//           : err.message,
+//         { toastId: "register-error" }
+//       );
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-white text-primary py-8 px-4 sm:px-6 lg:px-8">
+//       <div className="w-full max-w-md">
+//         <div className="bg-white p-8 rounded-xl shadow-lg">
+//           <h5 className="text-xl font-semibold text-center mb-6">Register</h5>
+//           <form onSubmit={handleSubmit} noValidate className="space-y-4">
+//             <div className="relative">
+//               <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+//                 Phone Number <span className="text-red-500">*</span>
+//               </label>
+//               <input
+//                 id="phone"
+//                 name="phone"
+//                 type="tel"
+//                 value={phone}
+//                 onChange={(e) => {
+//                   setPhone(e.target.value);
+//                   setErrors((prev) => ({ ...prev, phone: "" }));
+//                 }}
+//                 placeholder="Phone Number"
+//                 required
+//                 disabled={isLoading}
+//                 className={`form-control w-full px-4 py-2 rounded-full border ${
+//                   errors.phone ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-400"
+//                 } focus:ring-2 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+//                 aria-invalid={!!errors.phone}
+//                 aria-describedby={errors.phone ? "phone-error" : undefined}
+//               />
+//               {errors.phone && (
+//                 <p id="phone-error" className="mt-1 text-sm text-red-500" role="alert">
+//                   {errors.phone}
+//                 </p>
+//               )}
+//             </div>
+//             <div className="relative">
+//               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+//                 Email <span className="text-red-500">*</span>
+//               </label>
+//               <input
+//                 id="email"
+//                 name="email"
+//                 type="email"
+//                 value={email}
+//                 onChange={(e) => {
+//                   setEmail(e.target.value);
+//                   setErrors((prev) => ({ ...prev, email: "" }));
+//                 }}
+//                 placeholder="Email"
+//                 required
+//                 disabled={isLoading}
+//                 className={`form-control w-full px-4 py-2 rounded-full border ${
+//                   errors.email ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-400"
+//                 } focus:ring-2 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+//                 aria-invalid={!!errors.email}
+//                 aria-describedby={errors.email ? "email-error" : undefined}
+//               />
+//               {errors.email && (
+//                 <p id="email-error" className="mt-1 text-sm text-red-500" role="alert">
+//                   {errors.email}
+//                 </p>
+//               )}
+//             </div>
+//             <div className="relative">
+//               <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
+//                 Full Name <span className="text-red-500">*</span>
+//               </label>
+//               <input
+//                 id="fullName"
+//                 name="fullName"
+//                 type="text"
+//                 value={fullName}
+//                 onChange={(e) => {
+//                   setFullName(e.target.value);
+//                   setErrors((prev) => ({ ...prev, fullName: "" }));
+//                 }}
+//                 placeholder="Full Name"
+//                 required
+//                 disabled={isLoading}
+//                 className={`form-control w-full px-4 py-2 rounded-full border ${
+//                   errors.fullName ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-400"
+//                 } focus:ring-2 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+//                 aria-invalid={!!errors.fullName}
+//                 aria-describedby={errors.fullName ? "fullName-error" : undefined}
+//               />
+//               {errors.fullName && (
+//                 <p id="fullName-error" className="mt-1 text-sm text-red-500" role="alert">
+//                   {errors.fullName}
+//                 </p>
+//               )}
+//             </div>
+//             <div className="relative">
+//               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+//                 Password <span className="text-red-500">*</span>
+//               </label>
+//               <input
+//                 id="password"
+//                 name="password"
+//                 type="password"
+//                 value={password}
+//                 onChange={(e) => {
+//                   setPassword(e.target.value);
+//                   setErrors((prev) => ({ ...prev, password: "" }));
+//                 }}
+//                 placeholder="Password"
+//                 required
+//                 disabled={isLoading}
+//                 className={`form-control w-full px-4 py-2 rounded-full border ${
+//                   errors.password ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-400"
+//                 } focus:ring-2 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+//                 aria-invalid={!!errors.password}
+//                 aria-describedby={errors.password ? "password-error" : undefined}
+//               />
+//               {errors.password && (
+//                 <p id="password-error" className="mt-1 text-sm text-red-500" role="alert">
+//                   {errors.password}
+//                 </p>
+//               )}
+//             </div>
+//             <div className="relative">
+//               <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
+//                 State
+//               </label>
+//               <select
+//                 id="state"
+//                 name="state"
+//                 value={state}
+//                 onChange={(e) => {
+//                   setState(e.target.value);
+//                   setErrors((prev) => ({ ...prev, state: "" }));
+//                 }}
+//                 disabled={isLoading}
+//                 className={`form-control w-full px-4 py-2 rounded-full border ${
+//                   errors.state ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-400"
+//                 } focus:ring-2 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+//                 aria-invalid={!!errors.state}
+//                 aria-describedby={errors.state ? "state-error" : undefined}
+//               >
+//                 <option value="">Select State</option>
+//                 {states.map((s) => (
+//                   <option key={s.state} value={s.state}>
+//                     {s.state}
+//                   </option>
+//                 ))}
+//               </select>
+//               {errors.state && (
+//                 <p id="state-error" className="mt-1 text-sm text-red-500" role="alert">
+//                   {errors.state}
+//                 </p>
+//               )}
+//             </div>
+//             <div className="relative">
+//               <label htmlFor="lga" className="block text-sm font-medium text-gray-700 mb-1">
+//                 LGA
+//               </label>
+//               <select
+//                 id="lga"
+//                 name="lga"
+//                 value={lga}
+//                 onChange={(e) => {
+//                   setLga(e.target.value);
+//                   setErrors((prev) => ({ ...prev, lga: "" }));
+//                 }}
+//                 disabled={isLoading || !state}
+//                 className={`form-control w-full px-4 py-2 rounded-full border ${
+//                   errors.lga ? "border-red-500 focus:ring-red-500" : "border-gray-300 focus:ring-blue-400"
+//                 } focus:ring-2 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed`}
+//                 aria-invalid={!!errors.lga}
+//                 aria-describedby={errors.lga ? "lga-error" : undefined}
+//               >
+//                 <option value="">Select LGA</option>
+//                 {lgas.map((l) => (
+//                   <option key={l} value={l}>
+//                     {l}
+//                   </option>
+//                 ))}
+//               </select>
+//               {errors.lga && (
+//                 <p id="lga-error" className="mt-1 text-sm text-red-500" role="alert">
+//                   {errors.lga}
+//                 </p>
+//               )}
+//             </div>
+//             <button
+//               type="submit"
+//               className="w-full px-6 py-2 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed"
+//               disabled={isLoading}
+//             >
+//               {isLoading ? "Registering..." : "Register"}
+//             </button>
+//           </form>
+//         </div>
+//         <div className="text-center text-gray-700 py-4">
+//           <p className="text-sm">
+//             Already have an account?{" "}
+//             <a href="/login" className="text-blue-500 font-medium hover:underline">
+//               Login here
+//             </a>
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }

@@ -1,4 +1,3 @@
-// src/lib/logger.js
 import winston from "winston";
 
 // Check if running in Edge Runtime

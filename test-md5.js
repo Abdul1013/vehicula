@@ -1,8 +1,15 @@
-// test-md5.js
-const crypto = require('crypto');
-const password = '33683328Ee@'; // Replace with the password you entered
-const salt = 'aaaaf914c1f005f862f3543ffb7a1111';
-const hash = crypto.createHash('md5').update(password + salt).digest('hex');
-console.log('Input password:', password);
-console.log('Generated hash:', hash);
-console.log('Stored hash:', '8bf0b17f827f7b802152ee9eca48ab8c');
+import fs from 'fs';
+
+// Read the full file
+const data = JSON.parse(fs.readFileSync('areas.json', 'utf-8'));
+
+// Extract only state and LGA
+const simplified = data.map(item => ({
+  state: item.state,
+  lgas: item.lga || item.lgas // adapt if your property name is different
+}));
+
+// Write to a new JSON file
+fs.writeFileSync('states_lgas.json', JSON.stringify(simplified, null, 2));
+
+console.log('states_lgas.json generated successfully!');
