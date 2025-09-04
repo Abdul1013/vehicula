@@ -53,3 +53,51 @@
 {"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:34:16.242Z","uid":"3522"}
 {"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T13:34:16.383Z","uid":"3522"}
 {"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T13:34:16.391Z","uid":"3522"}
+
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T12:57:20.312Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T12:57:21.351Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":false,"timestamp":"2025-09-04T12:57:21.618Z","uid":"3522"}
+{"level":"warn","message":"Password comparison failed","phone":"08106140864","timestamp":"2025-09-04T12:57:21.619Z"}
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T12:57:28.306Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T12:57:28.446Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T12:57:28.661Z","uid":"3522"}
+{"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T12:57:28.672Z","uid":"3522"}
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T13:08:46.396Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:08:47.342Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T13:08:47.560Z","uid":"3522"}
+{"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T13:08:47.573Z","uid":"3522"}
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T13:12:30.896Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:12:31.201Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T13:12:31.429Z","uid":"3522"}
+{"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T13:12:31.443Z","uid":"3522"}
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T13:13:54.717Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:13:55.793Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T13:13:55.945Z","uid":"3522"}
+{"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T13:13:55.956Z","uid":"3522"}
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T13:18:09.238Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:18:09.493Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T13:18:09.706Z","uid":"3522"}
+{"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T13:18:09.739Z","uid":"3522"}
+{"level":"info","message":"Password reset for user","phone":"08106140864","timestamp":"2025-09-04T13:21:17.151Z","uid":"3522"}
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T13:21:47.712Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:21:48.488Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":false,"timestamp":"2025-09-04T13:21:48.782Z","uid":"3522"}
+{"level":"warn","message":"Password comparison failed","phone":"08106140864","timestamp":"2025-09-04T13:21:48.789Z"}
+{"level":"info","message":"Login attempt","phone":"2348106140864","timestamp":"2025-09-04T13:22:00.012Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:22:00.141Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T13:22:00.396Z","uid":"3522"}
+{"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T13:22:00.406Z","uid":"3522"}
+{"hasCurrentPassword":true,"hasNewPassword":true,"hasToken":true,"level":"info","message":"Change password request","timestamp":"2025-09-04T13:22:21.053Z"}
+{"level":"info","message":"Token verified","phone":"08106140864","timestamp":"2025-09-04T13:22:21.076Z","userId":"3522"}
+{"level":"info","message":"Password changed successfully","phone":"08106140864","timestamp":"2025-09-04T13:22:24.160Z","uid":"3522"}
+{"hasCurrentPassword":true,"hasNewPassword":true,"hasToken":true,"level":"info","message":"Change password request","timestamp":"2025-09-04T13:23:25.015Z"}
+{"level":"info","message":"Token verified","phone":"08106140864","timestamp":"2025-09-04T13:23:25.017Z","userId":"3522"}
+{"level":"warn","message":"Current password invalid","phone":"08106140864","timestamp":"2025-09-04T13:23:25.404Z"}
+{"level":"info","message":"Password reset for user","phone":"08106140864","timestamp":"2025-09-04T13:31:32.241Z","uid":"3522"}
+{"level":"info","message":"Login attempt","phone":"08106140864","timestamp":"2025-09-04T13:32:50.002Z"}
+{"level":"info","message":"User found","phone":"08106140864","timestamp":"2025-09-04T13:32:50.957Z","uid":"3522"}
+{"level":"info","message":"Bcrypt comparison","result":true,"timestamp":"2025-09-04T13:32:51.156Z","uid":"3522"}
+{"level":"info","message":"Login successful","phone":"08106140864","timestamp":"2025-09-04T13:32:51.173Z","uid":"3522"}
+{"hasCurrentPassword":true,"hasNewPassword":true,"hasToken":true,"level":"info","message":"Change password request","timestamp":"2025-09-04T13:33:34.875Z"}
+{"level":"info","message":"Token verified","phone":"08106140864","timestamp":"2025-09-04T13:33:34.887Z","userId":"3522"}
+{"level":"info","message":"Password changed successfully","phone":"08106140864","timestamp":"2025-09-04T13:33:38.573Z","uid":"3522"}
