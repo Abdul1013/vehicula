@@ -132,7 +132,10 @@ export default function Dashboard() {
     <div className='bg-white min-h-screen py-6 px-4'>
       <UserHeader userInfo={userInfo} />
       {loading && (
-        <div className='text-center text-gray-600'>Loading user data...</div>
+        <div className='flex justify-center items-center py-6'>
+          <div className='w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin'></div>
+          <span className='ml-2 text-gray-600 text-sm'>Loading...</span>
+        </div>
       )}
       {error && (
         <div className='flex items-center mb-4 p-3 border border-red-400 bg-red-50 rounded-lg'>

@@ -9,11 +9,11 @@ export default function UserHeader({ userInfo }) {
 
   const firstName = userInfo?.fullName?.split(" ")[0] || "";
   const firstLetter = firstName.charAt(0).toUpperCase();
-  const photo = userInfo?.photo; 
-  const userRegion = userInfo?.region || "Abuja";
+  const photo = userInfo?.photo;
+  const userRegion = userInfo?.region || "";
 
   return (
-    <div className='flex mt-20 w-8xl mx-auto flex-wrap items-center justify-between border-b pb-3 mb-4'>
+    <div className='flex mt-20 flex-wrap items-center justify-between border-b pb-3 mb-4'>
       {/* Left: Profile + Greeting */}
       <div className='flex items-center justify-center space-x-3'>
         {photo ? (
