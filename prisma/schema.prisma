@@ -123,6 +123,7 @@ model dl_application {
   email_address            String?   @db.VarChar(50)
   nin                      String?   @db.VarChar(20)
   date_created             DateTime? @db.DateTime(0)
+  service_id               String?   @db.VarChar(50)
 }
 
 model payout_completed_transactions {
