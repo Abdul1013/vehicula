@@ -1,81 +1,100 @@
 "use client";
-
 import { useState } from "react";
-import ServiceHeader from "../../components/ServiceHeader";
-import ServiceSearch from "../../components/ServiceSearch";
-import ServiceCard from "../../components/ServiceCard";
-import { useCart } from "../../utils/cartUtils";
+import ServiceHeader from "@/components/ServiceHeader";
+import ServiceSearch from "@/components/ServiceSearch";
+import ServiceCard from "@/components/ServiceCard";
+import { useCart } from "@/utils/cartUtils";
+import { DockIcon } from "lucide-react";
 
 const services = [
   {
     id: 1,
-    category: "Private",
+    name: "Private",
     type: "Saloon Car",
     desc: "(1.4–1.9L) – e.g. Golf, Corolla, Kia rio, Civic",
     price: 75000,
+    icon: DockIcon,
   },
   {
     id: 2,
-    category: "Private",
+    name: "Private",
     type: "Saloon Car",
     desc: "(2.0–2.6L) e.g. Camry, Benz, Accord, Lexus & Others",
     price: 76500,
+    icon: DockIcon,
+    
   },
   {
     id: 3,
-    category: "Commercial",
+    name: "Commercial",
     type: "Saloon Car",
     desc: "(1.4–1.9L) – e.g. Golf, Corolla, Kia rio, Civic",
     price: 78000,
+    icon: DockIcon,
+
   },
   {
     id: 4,
-    category: "Commercial",
+    name: "Commercial",
     type: "Saloon Car",
     desc: "(2.0–2.6L) e.g. Camry, Benz, Accord, Lexus & Others",
     price: 78000,
+    icon: DockIcon,
+
   },
   {
     id: 5,
-    category: "Private",
+    name: "Private",
     type: "SUV | Jeep | Bus/Sienna | Pick-Up | Crossover",
     desc: "",
     price: 78000,
+    icon: DockIcon,
+
   },
   {
     id: 6,
-    category: "Commercial",
+    name: "Commercial",
     type: "SUV | Jeep | Bus | Pick-Up | Crossover",
     desc: "",
     price: 83000,
+    icon: DockIcon,
+
   },
   {
     id: 7,
-    category: "Private",
+    name: "Private",
     type: "Coaster Bus",
     desc: "",
     price: 85000,
+    icon: DockIcon,
+
   },
   {
     id: 8,
-    category: "Commercial",
+    name: "Commercial",
     type: "Coaster Bus",
     desc: "",
     price: 89000,
+    icon: DockIcon,
+
   },
   {
     id: 9,
-    category: "Mini Trucks",
+    name: "Mini Trucks",
     type: "Trucks 15 Tons (Tippers)",
     desc: "",
     price: 180000,
+    icon: DockIcon,
+
   },
   {
     id: 10,
-    category: "Trucks",
+    name: "Trucks",
     type: "30 Tons (Trailers 10+ Tyres)",
     desc: "",
     price: 180000,
+    icon: DockIcon,
+
   },
 ];
 
@@ -85,7 +104,7 @@ export default function PlateNumberServices() {
 
   return (
     <div className='min-h-screen max-w-7xl mx-auto mt-20 bg-white px-4 py-6'>
-      <ServiceHeader title='Plate Number Issuance' cart={cart} />
+      <ServiceHeader title='Plate Number Issuance' />
       <ServiceSearch
         services={services}
         setFilteredServices={setFilteredServices}

@@ -1,19 +1,37 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
-import Image from "next/image";
+import ServiceSearch from "@/components/ServiceSearch";
+import ServiceHeader from "@/components/ServiceHeader";
+import ServiceCard from "@/components/ServiceCard";
+import { IdCard } from "lucide-react";
 
 const services = [
-  { id: "fresh-3", name: "Fresh", duration: "3 years", price: 38000 },
-  { id: "fresh-5", name: "Fresh", duration: "5 years", price: 45000 },
-  { id: "renew-3", name: "Renewal", duration: "3 years", price: 26000 },
-  { id: "renew-5", name: "Renewal", duration: "5 years", price: 30000 },
+  { id: "fresh-3", name: "Fresh", type: "3 years", price: 38000, icon: IdCard },
+  { id: "fresh-5", name: "Fresh", type: "5 years", price: 45000, icon: IdCard },
+  {
+    id: "renew-3",
+    name: "Renewal",
+    type: "3 years",
+    price: 26000,
+    icon: IdCard,
+  },
+  {
+    id: "renew-5",
+    name: "Renewal",
+    type: "5 years",
+    price: 30000,
+    icon: IdCard,
+    uploadRequired: 1,
+    docName: ["current driver license"],
+    fields: [],
+  },
   {
     id: "intl-1",
     name: "International (IDP)",
     duration: "1 year",
     price: 25000,
+    icon: IdCard,
   },
 ];
 
@@ -34,32 +52,20 @@ export default function DriverLicensePage() {
       }`
     );
   };
+  const [selectedId, setSelectedId] = useState(null);
+  const [filteredServices, setFilteredServices] = useState(services);
 
   return (
     <div className="bg-white min-h-screen mt-20 px-4 py-6">
       {/* Back */}
-      <a
-        href="/dashboard_form"
-        className="flex items-center gap-2 text-blue-600 hover:underline mb-6"
-      >
-        ← Driver’s License
-      </a>
+      <ServiceHeader title={"driver license"} />
 
       {/* Search */}
-      <div className="relative max-w-lg mx-auto mb-8">
-        <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
-        <input
-          type="text"
-          placeholder="Search Driver's License Services"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full border rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <ServiceSearch />
 
       {/* Services Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filtered.map((service) => (
+        {/* {filtered.map((service) => (
           <div
             key={service.id}
             onClick={() => handleSelect(service)}
@@ -72,6 +78,14 @@ export default function DriverLicensePage() {
               ₦{service.price.toLocaleString()}
             </p>
           </div>
+        ))} */}
+        {filteredServices.map((service) => (
+          <ServiceCard
+            key={service.id}
+            service={service}
+            selectedId={selectedId}
+            // toggleSelect={toggleSelect}
+          />
         ))}
       </div>
 
