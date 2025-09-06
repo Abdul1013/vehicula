@@ -1,4 +1,3 @@
-// src/middleware.js
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 import { logger } from "./lib/logger";
@@ -47,5 +46,10 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/dashboard_form", "/change-password"],
+  matcher: [
+    "/dashboard_form",
+    "/change-password",
+    "/dl_page",
+    "/dl_application_form",
+  ],
 };

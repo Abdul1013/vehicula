@@ -1,13 +1,12 @@
 // implement zod schemer 
 "use client";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Button from "@/components/ui/button";
 export default function LicenseApplication() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [form, setForm] = useState({
-    uid: "12345",
     first_name: "",
     surname: "",
     other_name: "",
@@ -26,19 +25,107 @@ export default function LicenseApplication() {
     phone_number: "",
     email_address: "",
     nin: "",
-    last_update: "2025-08-01",
+    service_id: searchParams.get("id") || "",
+    service_name: searchParams.get("name") || "",
+    duration: searchParams.get("duration") || "",
+    price: parseFloat(searchParams.get("price")) || 0,
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Fetch user data to prefill form
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const response = await fetch("/api/user");
+        if (!response.ok) throw new Error("Failed to fetch user data");
+        const user = await response.json();
+        setForm((prev) => ({
+          ...prev,
+          email_address: user.email || "",
+          phone_number: user.phone || "",
+          address: user.address || "",
+          first_name: user.fullName ? user.fullName.split(" ")[0] : "",
+          surname: user.fullName
+            ? user.fullName.split(" ").slice(1).join(" ")
+            : "",
+        }));
+        console.info("User data fetched for form", { userId: user.id });
+      } catch (err) {
+        console.warn("Error fetching user data", { error: err.message });
+        setError("Failed to load user data");
+      }
+    }
+    fetchUserData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const validateForm = () => {
+    if (
+      !form.first_name ||
+      !form.surname ||
+      !form.date_of_birth ||
+      !form.blood_group ||
+      !form.state_of_origin ||
+      !form.local_government ||
+      !form.address ||
+      !form.phone_number ||
+      !form.nin ||
+      !form.sex ||
+      !form.licence_class ||
+      !form.service_id
+    ) {
+      return "All required fields must be filled";
+    }
+    if (!/^\d{11}$/.test(form.nin)) {
+      return "NIN must be 11 digits";
+    }
+    if (!/^\d{10,15}$/.test(form.phone_number.replace(/^\+/, ""))) {
+      return "Invalid phone number format";
+    }
+    return null;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", form);
-    router.push("/payment_options");
-    // TODO: Hook into API call
+    setLoading(true);
+    setError(null);
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      setLoading(false);
+      console.warn("Form validation failed", { error: validationError });
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/dl_application", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!response.ok) {
+        const { error } = await response.json();
+        throw new Error(error);
+      }
+
+      const { applicationId, paymentRef } = await response.json();
+      console.info("Form submitted successfully", { applicationId, paymentRef });
+      router.push(
+        `/payment_options?application_id=${applicationId}&payment_ref=${paymentRef}&price=${form.price}`
+      );
+    } catch (err) {
+      console.warn("Error submitting form", { error: err.message });
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

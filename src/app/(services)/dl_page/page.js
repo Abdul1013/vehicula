@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ServiceSearch from "@/components/ServiceSearch";
 import ServiceHeader from "@/components/ServiceHeader";
@@ -7,39 +7,32 @@ import ServiceCard from "@/components/ServiceCard";
 import { IdCard } from "lucide-react";
 import { serviceConfig } from "@/config/serviceConfig";
 
-const services = serviceConfig.driverLicense
-// const services = [
-//   { id: "fresh-3", name: "Fresh", type: "3 years", price: 38000, icon: IdCard },
-//   { id: "fresh-5", name: "Fresh", type: "5 years", price: 45000, icon: IdCard },
-//   {
-//     id: "renew-3",
-//     name: "Renewal",
-//     type: "3 years",
-//     price: 26000,
-//     icon: IdCard,
-//   },
-//   {
-//     id: "renew-5",
-//     name: "Renewal",
-//     type: "5 years",
-//     price: 30000,
-//     icon: IdCard,
-//     uploadRequired: 1,
-//     docName: ["current driver license"],
-//     fields: [],
-//   },
-//   {
-//     id: "intl-1",
-//     name: "International (IDP)",
-//     duration: "1 year",
-//     price: 25000,
-//     icon: IdCard,
-//   },
-// ];
-
 export default function DriverLicensePage() {
   const [query, setQuery] = useState("");
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
+  // const services = serviceConfig.driverLicense
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const response = await fetch("/api/dl_services");
+        if (!response.ok) throw new Error("Failed to fetch services");
+        const { services } = await response.json();
+        setServices(services);
+        console.info("Fetched services for DriverLicensePage", {
+          count: services.length,
+        });
+      } catch (err) {
+        setError(err.message);
+        console.warn("Error fetching services", { error: err.message });
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchServices();
+  }, []);
 
   const filtered = services.filter((s) =>
     `${s.name} ${s.duration}`.toLowerCase().includes(query.toLowerCase())
@@ -77,7 +70,7 @@ export default function DriverLicensePage() {
         ))}
       </div>
 
-      {filtered.length === 0 && (
+      {filtered.length === 0 && !loading && (
         <p className="text-center text-gray-500 mt-6">
           No matching services found.
         </p>
