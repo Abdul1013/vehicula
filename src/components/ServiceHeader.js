@@ -13,14 +13,14 @@ export default function ServiceHeader({ title, cart }) {
         <FaArrowLeft size={18} />
         <span>{title}</span>
       </div>
-      <button className="relative bg-primary text-white p-3 rounded-full shadow-lg hover:scale-105 transition">
+      {/* <button className="relative bg-primary text-white p-3 rounded-full shadow-lg hover:scale-105 transition">
         <MdConfirmationNumber size={22} />
         {cart.length > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-2 py-0.5">
             {cart.length}
           </span>
         )}
-      </button>
+      </button> */}
     </div>
   );
 }
