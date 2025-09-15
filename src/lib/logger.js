@@ -29,6 +29,7 @@
 //     });
 
 // export { logger };
+export const runtime = "nodejs";
 
 import winston from "winston";
 
