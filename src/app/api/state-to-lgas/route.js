@@ -1,4 +1,6 @@
 // src/app/api/states-lgas/route.js
+export const runtime = "nodejs";
+
 import { NextResponse } from 'next/server';
 import { logger } from '../../../lib/logger';
 import { getStatesAndLgas } from '../../../lib/lga-to-region';

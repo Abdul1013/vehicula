@@ -76,7 +76,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-white text-primary py-8 px-4 sm:px-6 lg:px-8'>
+    <div className='min-h-screen flex items-center justify-center bg-white text-primary px-4 sm:px-6 lg:px-8'>
       <div className='w-full max-w-md'>
         <div className='bg-white p-8 rounded-xl shadow-lg'>
           <h5 className='text-xl font-semibold text-center mb-6'>
@@ -90,7 +90,7 @@ export default function LoginPage() {
             <div className='relative'>
               <label
                 htmlFor='phone'
-                className='block text-sm font-medium text-gray-700 mb-1'
+                className='block text-sm font-medium text-green-500 mb-1'
               >
                 Phone Number <span className='text-red-500'>*</span>
               </label>
@@ -133,7 +133,7 @@ export default function LoginPage() {
             <div className='relative'>
               <label
                 htmlFor='pwd'
-                className='block text-sm font-medium text-gray-700 mb-1'
+                className='block text-sm font-medium text-green-500 mb-1'
               >
                 Password <span className='text-red-500'>*</span>
               </label>
@@ -181,7 +181,7 @@ export default function LoginPage() {
             <div className='flex justify-between items-center mt-6'>
               <button
                 type='submit'
-                className='px-6 py-2 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed'
+                className='px-6 py-2 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed'
                 disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Login"}

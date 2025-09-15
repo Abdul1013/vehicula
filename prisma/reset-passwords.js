@@ -4,7 +4,8 @@ import bcrypt from 'bcryptjs';
 import { logger } from '../src/lib/logger.js';
 
 const DEFAULT_PASSWORD = 'Default@123';
-const TARGET_PHONE = '08106140864';
+// const TARGET_PHONE = '08106140864';
+const TARGET_PHONE = '07083186357';
 
 async function resetPassword() {
   try {
