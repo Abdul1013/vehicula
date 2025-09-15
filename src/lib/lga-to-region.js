@@ -53,3 +53,11 @@ export async function getRegionId(state, lga) {
   logger.error('Region not found for state/LGA', { state, lga });
   return null; // or throw an error if you want
 }
+
+
+export function getStatesAndLgas() {
+  return lgaData.map(s => ({
+    state: s.state,
+    lgas: s.lgas,
+  }));
+}
