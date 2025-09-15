@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/ui/button";
-
-export default function LicenseApplication() {
+import { Suspense } from "react";
+ function DLicenseApplication() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [form, setForm] = useState({
@@ -181,7 +181,7 @@ export default function LicenseApplication() {
               type={type}
               id={name}
               name={name}
-              value={form}
+              value={form[name] || ""}
               onChange={handleChange}
               required={required}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
@@ -247,4 +247,12 @@ export default function LicenseApplication() {
       </form>
     </div>
   );
+}
+
+export default function LicenseApplication () {
+  return(
+    <Suspense fallback={<div>Loading....</div>}>
+      <DLicenseApplication/>
+    </Suspense>
+  )
 }

@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Dropzone from "react-dropzone";
 import Button from "@/components/ui/button";
+import { serviceConfig } from "@/config/serviceConfig";
+// import LicenseApplication from "../dl_application_form/page";
+import LicenseApplication from "@/components/DriverLicence";
 
 const schema = z.object({
   fullName: z.string().min(2, "Full name is required"),
@@ -14,30 +18,78 @@ const schema = z.object({
   dob: z.string().optional(),
 });
 
+ function ServiceDetails() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category"); // e.g. driverLicense, plateNumber, insurance
+  const id = searchParams.get("id");
 
-export default function ServiceDetailsPage() {
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [requiredUploads, setRequiredUploads] = useState(0);
+  const [service, setService] = useState(null);
   const [files, setFiles] = useState([]);
 
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
   });
 
+  // Load the selected service from config
+  useEffect(() => {
+    if (category && id) {
+      const serviceData = serviceConfig[category]?.find((s) => String(s.id) === String(id));
+      setService(serviceData);
+    }
+  }, [category, id]);
+
   const onSubmit = (data) => {
-    if (files.length !== requiredUploads) {
-      alert(`Please upload exactly ${requiredUploads} documents`);
+    if (service?.uploadRequired && files.length !== service.uploadRequired) {
+      alert(`Please upload exactly ${service.uploadRequired} document(s).`);
       return;
     }
-    // send to API
-    console.log("Submitting:", data, files, selectedServices);
+
+    console.log("Submitting:", {
+      ...data,
+      service,
+      files,
+    });
+    // TODO: send to API
+    setTimeout(() => {
+      router.push(
+        "/payment_options"
+      );
+    }, 100);
   };
+
+  if (!service) {
+    return (
+      <div className="max-w-4xl mt-20 mx-auto px-4 py-6">
+        <p className="text-center text-gray-500">Loading service details...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mt-20 mx-auto px-4 py-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-800">Provide Details Below</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-800">
+        Provide Details Below
+      </h2>
 
-      {/* Error messages */}
+      {/* Service summary */}
+      <div className="mb-6 bg-gray-50 border  border-green-400 rounded p-4">
+        <h3 className="text-lg font-semibold text-gray-700">{service.name}</h3>
+        <p className="text-gray-600 text-sm">
+          {service.type || service.desc || service.duration}
+        </p>
+        <p className="text-gray-800 font-medium mt-1">₦{service.price}</p>
+      </div>
+
+      {/* Upload notice */}
+      {service.uploadRequired && (
+        <h4 className="mb-4">
+          Required upload:{" "}
+          <span className="font-medium">{service.docName?.join(", ")}</span>
+        </h4>
+      )}
+
+      {/* Validation errors */}
       {Object.values(errors).length > 0 && (
         <div className="mb-4 bg-red-50 border border-red-200 text-red-700 rounded p-3">
           <ul className="list-disc pl-5 text-sm">
@@ -48,13 +100,14 @@ export default function ServiceDetailsPage() {
         </div>
       )}
 
-      {/*Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/* Form */}
+      {(service.category === "driverLicense" && service.name === "Fresh") && <LicenseApplication/>}
+      {service.name !== "Fresh" && <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">Full Name</label>
           <input
             {...register("fullName")}
-            className="w-full mt-1 border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500"
+            className="w-full mt-1 border rounded-lg p-2 text-sm  border-green-400 focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
@@ -63,7 +116,7 @@ export default function ServiceDetailsPage() {
           <input
             {...register("phone")}
             type="tel"
-            className="w-full mt-1 border rounded-lg p-2 text-sm"
+            className=" border-green-400 w-full mt-1 border rounded-lg p-2 text-sm"
           />
         </div>
 
@@ -71,7 +124,7 @@ export default function ServiceDetailsPage() {
           <label className="block text-sm font-medium text-gray-700">Address</label>
           <input
             {...register("address")}
-            className="w-full mt-1 border rounded-lg p-2 text-sm"
+            className="  border-green-400 w-full mt-1 border rounded-lg p-2 text-sm"
           />
         </div>
 
@@ -80,54 +133,53 @@ export default function ServiceDetailsPage() {
           <input
             {...register("dob")}
             type="date"
-            className="w-full mt-1 border rounded-lg p-2 text-sm"
+            className="  border-green-400 w-full mt-1 border rounded-lg p-2 text-sm"
           />
         </div>
 
-        {/*  Upload Section */}
-        <div className="mt-6">
-          <p className="font-medium text-gray-800 mb-2">
-            Upload Required Documents ({files.length}/{requiredUploads})
-          </p>
-          <Dropzone
-            accept={{ "image/*": [] }}
-            maxSize={5 * 1024 * 1024}
-            onDrop={(acceptedFiles) => setFiles(acceptedFiles)}
-          >
-            {({ getRootProps, getInputProps }) => (
-              <div
-                {...getRootProps()}
-                className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50"
-              >
-                <input {...getInputProps()} />
-                <p className="text-sm text-gray-500">
-                  Drag & drop files here, or click to upload
-                </p>
-              </div>
-            )}
-          </Dropzone>
-          <ul className="mt-2 text-sm text-gray-600">
-            {files.map((f) => (
-              <li key={f.name}>{f.name}</li>
-            ))}
-          </ul>
-        </div>
+        {/* Upload section */}
+        {service.uploadRequired && (
+          <div className="mt-6">
+            <p className="font-medium text-gray-800 mb-2">
+              Upload Required Documents ({files.length}/{service.uploadRequired})
+            </p>
+            <Dropzone
+              accept={{ "image/*": [] }}
+              maxSize={5 * 1024 * 1024}
+              onDrop={(acceptedFiles) => setFiles(acceptedFiles)}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <div
+                  {...getRootProps()}
+                  className="border-2 border-dashed border-green-400 rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50"
+                >
+                  <input {...getInputProps()} />
+                  <p className="text-sm text-gray-500">
+                    Drag & drop files here, or click to upload
+                  </p>
+                </div>
+              )}
+            </Dropzone>
+            <ul className="mt-2 text-sm text-gray-600">
+              {files.map((f) => (
+                <li key={f.name}>{f.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
-        {/*  Selected Services Summary */}
-        <div className="bg-gray-50 p-3 rounded-lg mt-6">
-          <h3 className="text-sm font-semibold text-gray-700">Your Selected Services</h3>
-          <ol className="list-decimal ml-5 text-sm mt-2 text-gray-600">
-            {selectedServices.map((s, idx) => (
-              <li key={idx}>{s.name} - {s.option}</li>
-            ))}
-          </ol>
-        </div>
-
-        {/* Submit */}
-        <Button type="submit" className="mt-6 w-full">
+        <Button type="submit" className="mt-6 bg-green-600 w-full">
           Proceed →
         </Button>
-      </form>
+      </form>}
     </div>
   );
+}
+
+export default function ServiceDetailsPage(){
+  return(
+    <Suspense fallback={<div>Loading....</div>}>
+          <ServiceDetails/>
+        </Suspense>
+  )
 }
