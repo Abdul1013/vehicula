@@ -37,3 +37,4 @@
 {"level":"info","message":"Fetching driver’s license services for user","timestamp":"2025-09-15T14:49:31.271Z","userId":"3522"}
 {"level":"info","message":"Fetching driver’s license services for user","timestamp":"2025-09-15T14:49:34.315Z","userId":"3522"}
 {"level":"info","message":"Fetching driver’s license services for user","timestamp":"2025-09-15T14:49:42.916Z","userId":"3522"}
+{"level":"warn","message":"No auth_token provided in user request","timestamp":"2025-09-15T15:00:49.930Z"}
