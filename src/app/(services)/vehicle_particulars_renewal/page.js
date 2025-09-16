@@ -56,17 +56,20 @@ export default function VehicleParticularsRenewal() {
   const [query, setQuery] = useState("");
   const router = useRouter();
 
-  const filteredServices = services.filter((s) =>
-    s.name.toLowerCase().includes(query.toLowerCase())
-  );
-
+  // const filteredServices = services.filter((s) =>
+  //   s.name.toLowerCase().includes(query.toLowerCase())
+  // );
+ const [filteredServices, setFilteredServices] = useState([]);
   return (
     <div className="p-4 max-w-6xl mt-20 mx-auto">
       {/* Header */}
       <ServiceHeader title="Vehicle Particulars Renewal" />
 
       {/* Search */}
-      <ServiceSearch />
+      <ServiceSearch   services={services}
+        setFilteredServices={setFilteredServices}
+        searchFields={["name", "category"]} // Optimized for driver's license/
+        />
 
       {/* Grid */}
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
