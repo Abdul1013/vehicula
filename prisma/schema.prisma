@@ -103,7 +103,8 @@ model commission_structure {
 }
 
 model dl_application {
-  uid                      BigInt    @id
+  uid                      BigInt    @id @default(autoincrement())
+  user_id                 BigInt?
   first_name               String?   @db.VarChar(50)
   surname                  String?   @db.VarChar(50)
   other_name               String?   @db.VarChar(50)
@@ -124,6 +125,7 @@ model dl_application {
   nin                      String?   @db.VarChar(20)
   date_created             DateTime? @db.DateTime(0)
   service_id               String?   @db.VarChar(50)
+  file_urls               String?   @db.Text
 }
 
 model payout_completed_transactions {
