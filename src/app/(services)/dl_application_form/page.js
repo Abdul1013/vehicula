@@ -213,7 +213,7 @@ function DLicenseApplication() {
   };
 
   return (
-    <div className='min-h-screen mt-32 bg-white text-gray-900'>
+    <div className='min-h-screen mt-32 mx-5 bg-white text-gray-900'>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className='max-w-2xl mx-auto mt-8 space-y-6'
