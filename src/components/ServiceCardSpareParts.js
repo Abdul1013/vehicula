@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FaIdCard } from "react-icons/fa";
 import { formatPrice } from "../utils/formatPrice";
 
 export default function ServiceCard({ service, selectedId, onSelect }) {
@@ -56,19 +55,11 @@ export default function ServiceCard({ service, selectedId, onSelect }) {
     >
       <div className="flex flex-col items-center">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-50">
-          {service.icon ? (
-            <service.icon
-              className={`h-8 w-8 ${
-                isSelected ? "text-white" : "text-green-600"
-              }`}
-            />
-          ) : (
-            <FaIdCard
-              className={`h-8 w-8 ${
-                isSelected ? "text-white" : "text-green-600"
-              }`}
-            />
-          )}
+          <i
+            className={`${service.icon} h-8 w-8 ${
+              isSelected ? "text-white" : "text-green-600"
+            }`}
+          />
         </div>
 
         <span
@@ -83,7 +74,14 @@ export default function ServiceCard({ service, selectedId, onSelect }) {
             isSelected ? "text-white" : "text-blue-400"
           }`}
         >
-          {service.type}
+          {service.brand}
+        </span>
+        <span
+          className={`font-medium ${
+            isSelected ? "text-white" : "text-blue-400"
+          }`}
+        >
+          {service.spec}
         </span>
         <span
           className={`font-bold text-lg mt-2 ${
