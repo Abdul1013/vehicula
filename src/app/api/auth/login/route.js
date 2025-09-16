@@ -1,10 +1,13 @@
 // src/app/api/auth/login/route.js
+export const runtime = "nodejs";
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import { SignJWT } from 'jose';
 import { logger } from '../../../../lib/logger';
+
+
 
 const SALT = 'aaaaf914c1f005f862f3543ffb7a1111';
 

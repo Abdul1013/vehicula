@@ -1,4 +1,7 @@
 // src/app/api/auth/change-password/route.js
+
+export const runtime = "nodejs";
+
 import { NextResponse } from 'next/server';
 import { prisma } from '../../../../lib/prisma';
 import bcrypt from 'bcryptjs';
