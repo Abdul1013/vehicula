@@ -1,16 +1,39 @@
 "use client";
+
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Globe, Settings } from "lucide-react";
 
 export default function UserHeader({ userInfo }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const router = useRouter();
 
   const firstName = userInfo?.fullName?.split(" ")[0] || "";
   const firstLetter = firstName.charAt(0).toUpperCase();
   const photo = userInfo?.photo;
   const userRegion = userInfo?.region || "";
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (response.ok) {
+        router.push("/");
+        router.refresh(); // Refresh to update Header component
+      } else {
+        console.error("Logout failed:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+    setIsLogoutModalOpen(false);
+    setMenuOpen(false);
+  };
 
   return (
     <div className='flex mt-20 flex-wrap items-center justify-between border-b pb-3 mb-4'>
@@ -98,16 +121,45 @@ export default function UserHeader({ userInfo }) {
               </li>
             )}
             <li>
-              <Link
-                href='/logout'
-                className='block px-4 py-2 text-red-600 hover:bg-red-50'
+              <button
+                onClick={() => {
+                  setIsLogoutModalOpen(true);
+                  setMenuOpen(false);
+                }}
+                className='block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50'
               >
                 Logout
-              </Link>
+              </button>
             </li>
           </ul>
         )}
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {isLogoutModalOpen && (
+        <div className='fixed inset-0 bg-black/80 bg-opacity-50 flex items-center justify-center z-50'>
+          <div className='bg-white rounded-lg p-6 max-w-sm w-full'>
+            <h2 className='text-lg font-semibold mb-4'>Confirm Logout</h2>
+            <p className='text-gray-600 mb-6'>
+              Are you sure you want to log out?
+            </p>
+            <div className='flex justify-end space-x-4'>
+              <button
+                onClick={() => setIsLogoutModalOpen(false)}
+                className='px-4 py-2 text-gray-600 bg-gray-100 rounded-full hover:bg-gray-200'
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className='px-4 py-2 text-white bg-red-600 rounded-full hover:bg-red-700'
+              >
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

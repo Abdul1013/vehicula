@@ -97,6 +97,7 @@ export async function POST(request) {
 
     response.cookies.set({
       name: 'auth_token',
+      httpOnly: false, 
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

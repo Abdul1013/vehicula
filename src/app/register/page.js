@@ -22,6 +22,29 @@ const RegisterForm = ({ defaultValues = {} }) => {
   const [errors, setErrors] = useState({});
   const router = useRouter();
 
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkSession = async () => {
+      try {
+        console.log("Checking session on register page...");
+        const response = await fetch("/api/auth/check-session", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        console.log("Register page session response:", data);
+        if (data.user) {
+          // Redirect to dashboard_form if logged in
+          router.push("/dashboard_form");
+          router.refresh();
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+      }
+    };
+
+    checkSession();
+  }, [router]);
+
   // Fetch regions on mount
   useEffect(() => {
     const fetchRegions = async () => {
@@ -151,30 +174,30 @@ const RegisterForm = ({ defaultValues = {} }) => {
   ];
 
   return (
-    <div className="container-xxl bg-white hero-header mt-30 mb-20 text-primary">
-      <div className="container mx-auto px-4">
-        <div className="lg:flex lg:items-center lg:justify-center gap-16">
+    <div className='container-xxl bg-white hero-header mt-30 mb-20 text-primary'>
+      <div className='container mx-auto px-4'>
+        <div className='lg:flex lg:items-center lg:justify-center gap-16'>
           {/* Left Side Features */}
-          <div className="flex flex-col items-center lg:items-start mb-10 mt-[-30px] text-center lg:text-left max-w-sm">
-            <h2 className="text-primary w-full text-3xl font-bold whitespace-nowrap mb-6">
+          <div className='flex flex-col items-center lg:items-start mb-10 mt-[-30px] text-center lg:text-left max-w-sm'>
+            <h2 className='text-primary w-full text-3xl font-bold whitespace-nowrap mb-6'>
               Let&apos;s get started!
             </h2>
-            <div className="grid gap-4">
+            <div className='grid gap-4'>
               {features.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center bg-blue-600 rounded-full text-white">
+                <div key={idx} className='flex items-center gap-3'>
+                  <div className='flex-shrink-0 w-12 h-12 flex items-center justify-center bg-blue-600 rounded-full text-white'>
                     <i className={`fa ${item.icon}`} />
                   </div>
-                  <p className="text-gray-700 font-medium">{item.text}</p>
+                  <p className='text-gray-700 font-medium'>{item.text}</p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right Side Form */}
-          <div className="flex items-center justify-center w-full px-4">
-            <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-              <form onSubmit={handleSubmit} noValidate className="space-y-4">
+          <div className='flex items-center justify-center w-full px-4'>
+            <div className='w-full max-w-md bg-white p-8 rounded-xl shadow-lg'>
+              <form onSubmit={handleSubmit} noValidate className='space-y-4'>
                 {[
                   {
                     type: "tel",
@@ -213,7 +236,7 @@ const RegisterForm = ({ defaultValues = {} }) => {
                     required: true,
                   },
                 ].map((field, idx) => (
-                  <div key={idx} className="relative">
+                  <div key={idx} className='relative'>
                     <input
                       type={field.type}
                       name={field.name}
@@ -261,8 +284,8 @@ const RegisterForm = ({ defaultValues = {} }) => {
                     {errors[field.name] && (
                       <p
                         id={`${field.name}-error`}
-                        className="mt-1 text-sm text-red-500"
-                        role="alert"
+                        className='mt-1 text-sm text-red-500'
+                        role='alert'
                       >
                         {errors[field.name]}
                       </p>
@@ -271,9 +294,9 @@ const RegisterForm = ({ defaultValues = {} }) => {
                 ))}
 
                 {/* State Select */}
-                <div className="relative">
+                <div className='relative'>
                   <select
-                    name="state"
+                    name='state'
                     value={formData.state}
                     onChange={handleChange}
                     required
@@ -286,21 +309,21 @@ const RegisterForm = ({ defaultValues = {} }) => {
                     aria-invalid={!!errors.state}
                     aria-describedby={errors.state ? "state-error" : undefined}
                   >
-                    <option value="">Select state of residence</option>
+                    <option value=''>Select state of residence</option>
                     {regions.map((reg) => (
                       <option key={reg.reg_id} value={reg.reg_label}>
                         {reg.reg_label}
                       </option>
                     ))}
                   </select>
-                  <span className="absolute right-3 top-3 text-blue-500 text-lg">
-                    <i className="fa fa-globe-africa" />
+                  <span className='absolute right-3 top-3 text-blue-500 text-lg'>
+                    <i className='fa fa-globe-africa' />
                   </span>
                   {errors.state && (
                     <p
-                      id="state-error"
-                      className="mt-1 text-sm text-red-500"
-                      role="alert"
+                      id='state-error'
+                      className='mt-1 text-sm text-red-500'
+                      role='alert'
                     >
                       {errors.state}
                     </p>
@@ -308,9 +331,9 @@ const RegisterForm = ({ defaultValues = {} }) => {
                 </div>
 
                 {/* LGA Select */}
-                <div className="relative">
+                <div className='relative'>
                   <select
-                    name="lga"
+                    name='lga'
                     value={formData.lga}
                     onChange={handleChange}
                     required
@@ -323,21 +346,21 @@ const RegisterForm = ({ defaultValues = {} }) => {
                     aria-invalid={!!errors.lga}
                     aria-describedby={errors.lga ? "lga-error" : undefined}
                   >
-                    <option value="">Select LGA of residence</option>
+                    <option value=''>Select LGA of residence</option>
                     {lgaOptions.map((lga) => (
                       <option key={lga.id} value={lga.name}>
                         {lga.name}
                       </option>
                     ))}
                   </select>
-                  <span className="absolute right-3 top-3 text-blue-500 text-lg">
-                    <i className="fa fa-map-pin" />
+                  <span className='absolute right-3 top-3 text-blue-500 text-lg'>
+                    <i className='fa fa-map-pin' />
                   </span>
                   {errors.lga && (
                     <p
-                      id="lga-error"
-                      className="mt-1 text-sm text-red-500"
-                      role="alert"
+                      id='lga-error'
+                      className='mt-1 text-sm text-red-500'
+                      role='alert'
                     >
                       {errors.lga}
                     </p>
@@ -345,46 +368,46 @@ const RegisterForm = ({ defaultValues = {} }) => {
                 </div>
 
                 {/* Promo Code */}
-                <div className="relative">
+                <div className='relative'>
                   <input
-                    type="text"
-                    name="refCode"
+                    type='text'
+                    name='refCode'
                     value={formData.refCode}
                     onChange={handleChange}
-                    placeholder="Promo code (Optional)"
-                    className="w-full pl-4 pr-12 py-3 rounded-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    placeholder='Promo code (Optional)'
+                    className='w-full pl-4 pr-12 py-3 rounded-full shadow-sm border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none transition disabled:bg-gray-100 disabled:cursor-not-allowed'
                     disabled={isLoading}
                   />
-                  <span className="absolute right-3 top-3 text-blue-500 text-lg">
-                    <i className="fa fa-gift" />
+                  <span className='absolute right-3 top-3 text-blue-500 text-lg'>
+                    <i className='fa fa-gift' />
                   </span>
                 </div>
 
                 {/* Submit Button */}
                 <button
-                  type="submit"
-                  className="w-full py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  type='submit'
+                  className='w-full py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:bg-blue-400 disabled:cursor-not-allowed'
                   disabled={isLoading}
                 >
                   {isLoading ? "Registering..." : "Register"}
                 </button>
 
                 {/* Links */}
-                <p className="text-center text-sm text-gray-500">
+                <p className='text-center text-sm text-gray-500'>
                   Already a member?{" "}
                   <a
-                    href="/login"
-                    className="text-blue-600 font-medium hover:underline"
+                    href='/login'
+                    className='text-blue-600 font-medium hover:underline'
                   >
                     Login here
                   </a>
                 </p>
-                <p className="text-center text-xs text-gray-400 mt-4">
+                <p className='text-center text-xs text-gray-400 mt-4'>
                   By registering, you agree to the{" "}
                   <a
-                    href="/terms-and-conditions"
-                    className="text-blue-500 hover:underline"
-                    target="_blank"
+                    href='/terms-and-conditions'
+                    className='text-blue-500 hover:underline'
+                    target='_blank'
                   >
                     Terms & Conditions
                   </a>
@@ -399,10 +422,6 @@ const RegisterForm = ({ defaultValues = {} }) => {
 };
 
 export default RegisterForm;
-
-
-
-
 
 // // src/app/register/page.jsx
 // "use client";

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -11,6 +11,29 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkSession = async () => {
+      try {
+        console.log("Checking session on login page...");
+        const response = await fetch("/api/auth/check-session", {
+          credentials: "include",
+        });
+        const data = await response.json();
+        console.log("Login page session response:", data);
+        if (data.user) {
+          // Redirect to dashboard_form if logged in
+          router.push("/dashboard_form");
+          router.refresh();
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+      }
+    };
+
+    checkSession();
+  }, [router]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -47,10 +70,7 @@ export default function LoginPage() {
         throw new Error(data.error || "Login failed");
       }
 
-      toast.success(
-        "Login successful! Welcome",
-        { toastId: "login-success" }
-      );
+      toast.success("Login successful! Welcome", { toastId: "login-success" });
       console.log(
         "Redirecting based on mustChangePassword:",
         data.user.mustChangePassword
