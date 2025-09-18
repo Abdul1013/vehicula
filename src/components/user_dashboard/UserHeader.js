@@ -5,10 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Globe, Settings } from "lucide-react";
+import { useUser } from "@/context/UserContext";
 
 export default function UserHeader({ userInfo }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { setUser } = useUser();
   const router = useRouter();
 
   const firstName = userInfo?.fullName?.split(" ")[0] || "";
@@ -23,6 +25,7 @@ export default function UserHeader({ userInfo }) {
         credentials: "include",
       });
       if (response.ok) {
+        setUser(null);
         router.push("/");
         router.refresh(); // Refresh to update Header component
       } else {

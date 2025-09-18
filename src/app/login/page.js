@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useUser } from "@/context/UserContext";
+
 
 export default function LoginPage() {
   const [phone, setPhone] = useState("");
@@ -10,6 +12,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { setUser } = useUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -65,10 +68,11 @@ export default function LoginPage() {
 
       const data = await res.json();
       console.log("Login response:", data);
-
+      
       if (!res.ok) {
         throw new Error(data.error || "Login failed");
       }
+      setUser(data.user);
 
       toast.success("Login successful! Welcome", { toastId: "login-success" });
       console.log(
