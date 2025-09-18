@@ -139,6 +139,10 @@ export default function ProfilePage() {
 
       setProfile(data.user); // Update local state with new data
       setPhotoFile(null); // Clear photo file
+      if (localStorage.getItem("userCache")) {
+        console.log("Clearing userCache after profile update");
+        localStorage.removeItem("userCache");
+      }
       toast.success("Profile updated successfully!", {
         toastId: "profile-success",
       });
