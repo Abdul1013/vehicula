@@ -43,6 +43,7 @@ export async function middleware(request) {
       "/change-password",
       "/dl_page",
       "/dl_application_form",
+      "/profile_form",
     ].includes(request.nextUrl.pathname)
   ) {
     if (!token) {
@@ -93,6 +94,7 @@ export const config = {
     "/change-password",
     "/dl_page",
     "/dl_application_form",
+    "/profile_form",
     "/login",
     "/register",
   ],
