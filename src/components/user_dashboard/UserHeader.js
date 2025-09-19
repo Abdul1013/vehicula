@@ -61,7 +61,7 @@ export default function UserHeader({ userInfo }) {
             <Globe className='w-3 h-3' />
             <span>{userRegion}</span>
             <Link
-              href='/profile?change_region=true'
+              href='/profile_form'
               className='text-blue-600 hover:underline hover:text-blue-800 transition'
             >
               Change region

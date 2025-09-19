@@ -16,6 +16,7 @@ export default function ProfilePage() {
     address: "",
     photo: "/default-avatar.png",
   });
+  const [isFetching, setIsFetching] = useState(true);
   const [regions, setRegions] = useState([]);
   const [lgas, setLgas] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -23,51 +24,48 @@ export default function ProfilePage() {
   const [errors, setErrors] = useState({});
   const [photoFile, setPhotoFile] = useState(null);
 
-  // Fetch user profile and regions on mount
+   // Fetch user profile and regions on mount
   useEffect(() => {
-    const fetchProfile = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch("/api/profile");
-        if (!response.ok) {
-          if (response.status === 401) {
-            router.push("/login"); // Redirect to login if unauthenticated
-            return;
-          }
-          throw new Error("Failed to fetch profile");
+        const [profileRes, regionsRes] = await Promise.all([
+          fetch("/api/profile"),
+          fetch("/api/regions"),
+        ]);
+
+        if (profileRes.status === 401) {
+          router.push("/login");
+          return;
         }
-        const data = await response.json();
-        setProfile(data.user);
+        if (!profileRes.ok) throw new Error("Failed to fetch profile");
+        if (!regionsRes.ok) throw new Error("Failed to fetch regions");
+
+        const profileData = await profileRes.json();
+        const regionsData = await regionsRes.json();
+
+        setProfile(profileData.user);
+        setRegions(regionsData);
       } catch (error) {
-        toast.error("Failed to load profile", { toastId: "profile-error" });
+        toast.error(error.message || "Failed to load data", {
+          toastId: "load-error",
+        });
+      } finally {
+        setIsFetching(false);
       }
     };
 
-    const fetchRegions = async () => {
-      try {
-        const response = await fetch("/api/regions");
-        if (!response.ok) throw new Error("Failed to fetch regions");
-        const data = await response.json();
-        setRegions(data);
-      } catch (error) {
-        toast.error("Failed to load regions", { toastId: "regions-error" });
-      }
-    };
-
-    fetchProfile();
-    fetchRegions();
+    loadData();
   }, [router]);
 
   // Fetch LGAs when region changes
   useEffect(() => {
-    if (profile.region) {
+    if (profile?.region) {
       const fetchLgas = async () => {
         try {
           const response = await fetch(
             `/api/lgas?region=${encodeURIComponent(profile.region)}`
           );
-          if (!response.ok) {
-            throw new Error("Failed to fetch LGAs");
-          }
+          if (!response.ok) throw new Error("Failed to fetch LGAs");
           const data = await response.json();
           setLgas(data);
         } catch (error) {
@@ -78,8 +76,16 @@ export default function ProfilePage() {
     } else {
       setLgas([]);
     }
-  }, [profile.region]);
+  }, [profile?.region]);
 
+  // Show loader until fetching done
+  if (isFetching) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
   const validateForm = () => {
     const newErrors = {};
     if (!profile.name) newErrors.name = "Name is required";
