@@ -68,7 +68,7 @@ export async function POST(request) {
         bk_status: 1,
         bk_phone_verified: 1,
         bk_email_verified: 1,
-        bk_usr_role_fk: 1,
+        bk_usr_role_fk: 0,
         must_change_password: false,
         bk_default_region: regionId,
       },

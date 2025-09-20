@@ -2,77 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  FileText,
-  Car,
-  CarFront,
-  MapPin,
-  UserCheck,
-  Key,
-  RefreshCcw,
-  Briefcase,
-  PiggyBank,
-  IdCard,
-  CreditCard,
-  ArrowRightLeft,
-  Wrench,
-  GraduationCap,
-  ShieldCheck,
-} from "lucide-react";
-
-// Map Font Awesome icons to Lucide icons
-const iconMap = {
-  "fa-ticket-alt": CreditCard,
-  "fa-recycle": RefreshCcw,
-  "fa-exchange-alt": ArrowRightLeft,
-  "fa-car-crash": CarFront,
-  "fa-file-invoice": FileText,
-  "fa-tools": Wrench,
-  "fa-id-card": IdCard,
-  "fa-graduation-cap": GraduationCap,
-  "fa-piggy-bank": PiggyBank,
-};
-
-// Map service names to descriptions and paths
-const serviceDetails = {
-  "Plate Number": {
-    description: "Fresh Plate number, Truck, replacement. Change of Category.",
-    path: "/plate-number-service",
-  },
-  "Vehicle Particulars Renewal": {
-    description: "Get your car registered with ease and flexible plans.",
-    path: "/vehicle_particulars_renewal",
-  },
-  "Change of Ownership": {
-    description: "Update your vehicle particulars after purchase.",
-    path: "/change-of-ownership",
-  },
-  "Comprehensive Insurance": {
-    description: "Specialized solutions for companies with multiple vehicles.",
-    path: "/services/fleet",
-  },
-  "Local Government Paper": {
-    description: "Setup installment plans for commercial vehicle permits.",
-    path: "/services/local-permit",
-  },
-  "Spare Parts": {
-    description: "Battery, Tyre, Engine oil, KEKE, Engine Oil",
-    path: "/spare_parts",
-  },
-  "Driver's License": {
-    description: "Save in bits for your vehicle particulars renewal.",
-    path: "/dl_page",
-  },
-  "Driving School": {
-    description: "1 month duration.",
-    path: "/services/inspection",
-  },
-  "Vehicular Goals": {
-    description:
-      "VG5K, VG10K, VG20K, VG30K, VG40K, VG50K, VG100K, VG200K, VG500K, VG1M",
-    path: "/services/fleet",
-  },
-};
+import * as LucideIcons from "lucide-react";
 
 export default function ServicesDashboard() {
   const router = useRouter();
@@ -83,7 +13,7 @@ export default function ServicesDashboard() {
   useEffect(() => {
     async function fetchServices() {
       try {
-        const response = await fetch("/api/vehicle-services");
+        const response = await fetch("/api/vehicle-services?status=active");
         if (!response.ok) {
           throw new Error("Failed to fetch services");
         }
@@ -99,11 +29,30 @@ export default function ServicesDashboard() {
   }, []);
 
   if (loading) {
-    return <div className='text-center py-12'>Loading...</div>;
+    return (
+      <div className='text-center py-12'>
+        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600 mx-auto'></div>
+        <p className='mt-4 text-gray-600'>Loading services...</p>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className='text-center py-12 text-red-500'>Error: {error}</div>;
+    return (
+      <div className='text-center py-12'>
+        <p className='text-red-500'>Error: {error}</p>
+        <button
+          onClick={() => {
+            setLoading(true);
+            setError(null);
+            fetchServices();
+          }}
+          className='mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors'
+        >
+          Retry
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -118,16 +67,12 @@ export default function ServicesDashboard() {
       {/* Service Cards Grid */}
       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8'>
         {services.map((service) => {
-          const Icon = iconMap[service.v_s_icon] || ShieldCheck; // Fallback to ShieldCheck if no icon match
-          const details = serviceDetails[service.v_s_name] || {
-            description: "No description available",
-            path: "/services",
-          };
+          const Icon = LucideIcons[service.v_s_icon] || LucideIcons.ShieldCheck; // Fallback to ShieldCheck
 
           return (
             <div
               key={service.v_s_id}
-              onClick={() => router.push(details.path)}
+              onClick={() => router.push(service.v_s_path || "/services")}
               className='cursor-pointer group block rounded-2xl bg-white shadow-md hover:shadow-lg transition-shadow p-6 text-center border border-gray-100 hover:border-green-500'
             >
               {/* Icon */}
@@ -142,7 +87,7 @@ export default function ServicesDashboard() {
 
               {/* Description */}
               <p className='mt-2 text-sm text-gray-600'>
-                {details.description}
+                {service.v_s_description || "No description available"}
               </p>
             </div>
           );

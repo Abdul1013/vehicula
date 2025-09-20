@@ -680,6 +680,9 @@ model vehicle_services {
   v_s_status   Int    @default(1) @db.TinyInt
   v_s_priority Int    @db.TinyInt
   v_s_icon     String @db.VarChar(50)
+
+  v_s_description String? @db.VarChar(500)
+  v_s_path        String? @db.VarChar(200)
 }
 
 model vehicle_sub_plan_heading {
