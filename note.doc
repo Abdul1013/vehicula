@@ -2,3 +2,7 @@ dl = driver licence
 ct =
 ag = agent 
 ct_about_mini, ct_affiliates, ct_gallery  = component & != page 
+
+text-green-500 text
+border-green-400 
+btn bg 600
