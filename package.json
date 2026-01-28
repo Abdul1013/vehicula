@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-  "dev": "next dev",
-  "build": "prisma generate && next build",
-  "start": "next start",
-  "lint": "next lint",
-  "postinstall": "prisma generate"
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.0",
@@ -22,7 +22,7 @@
     "lucide-react": "^0.539.0",
     "mobile-detect": "^1.4.5",
     "mysql2": "^3.14.3",
-    "next": "15.4.5",
+    "next": "15.4.10",
     "nodemailer": "^7.0.5",
     "react": "19.1.0",
     "react-dom": "19.1.0",
